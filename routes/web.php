@@ -27,6 +27,10 @@ Route::get('/email-test', function(){
     dd("Email send successfully");
 });
 
+Route::get('/contact', function () {
+    return Inertia::render('ContactUs');
+})->name('contact');
+
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
