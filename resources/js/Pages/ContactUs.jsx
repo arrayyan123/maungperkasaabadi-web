@@ -39,7 +39,7 @@ const ContactUs = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-grow pt-20 bg-cover bg-center" style={{ backgroundImage: 'url(/path-to-your-background-image.jpg)' }}>
+      <main className="flex-grow pt-20 bg-cover bg-center" style={{ backgroundImage: "url('https://laravel.com/assets/img/welcome/background.svg')", }}>
         <div className="container mx-auto p-6">
           <div className="bg-white shadow-lg rounded-lg p-10 w-full max-w-md mx-auto">
             <h1 className="text-2xl font-semibold text-center mb-6">Contact Us</h1>
