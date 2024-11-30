@@ -64,13 +64,13 @@ const Navbar = () => {
         <ul className={`${
           isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
         } lg:opacity-100 lg:max-h-full lg:flex lg:mx-auto lg:flex-row flex-col lg:items-center lg:w-auto lg:space-x-6 overflow-hidden transition-all duration-300 ease-in-out`}>
-          <li><a className={`text-sm ${navbarText} hover:text-gray-500`} href="#">Home</a></li>
+          <li><a className={`text-sm ${navbarText} hover:text-gray-500`} href="/home">Home</a></li>
           <li className="text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
             </svg>
           </li>
-          <li><a className={`text-sm ${navbarText} hover:text-gray-500`} href="#">About Us</a></li>
+          <li><a className={`text-sm ${navbarText} hover:text-gray-500`} href="/home#about-us-section">About Us</a></li>
           <li className="text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
@@ -82,7 +82,7 @@ const Navbar = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
             </svg>
           </li>
-          <li><a className={`text-sm ${navbarText} hover:text-gray-500`} href="#">Pricing</a></li>
+          
           <button className="bg-gray-200 text-black hover:bg-gray-white py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg lg:mt-0 mt-6">
             <a href="/contact">
               Contact Us

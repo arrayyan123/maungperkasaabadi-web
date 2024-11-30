@@ -77,7 +77,8 @@ function ContentSection() {
   }, [])
 
   return (
-    <section className="bg-white dark:bg-gray-900 p-20">
+    <section id="about-us-section" className="bg-white dark:bg-gray-900 p-20">
+      <h1 className="text-5xl font-bold mb-10 text-center text-gray-900 dark:text-white">About Us</h1>
       {contentData.map((content, index) => (
         <ContentItem
           key={index}
