@@ -11,7 +11,7 @@ function Hero() {
             
             <div class="relative z-10 p-10 flex flex-col justify-center items-center h-full text-center">
                 <h1 class="text-5xl font-bold leading-tight mb-4">Maung Perkasa Abadi</h1>
-                <p class="text-lg text-gray-300 mb-8">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque consequuntur neque alias maxime, quis dolorem nisi repellendus dolor voluptatum quod in harum ad cum distinctio doloremque error praesentium culpa! Ducimus.</p><br />
+                <p class="text-lg text-gray-300 mb-8">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque consequuntur neque alias maxime, quis dolorem nisi repellendus dolor voluptatum quod in harum ad cum distinctio doloremque error praesentium culpa! Ducimus.</p>
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non nam aspernatur quae nemo incidunt perferendis totam reiciendis, aliquid inventore excepturi autem cum maiores tenetur voluptatibus aperiam neque iusto consectetur? Voluptatum.</p>
                 <a href="#" class="bg-red-500 mt-4 text-white hover:bg-red-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">Get Started</a>
             </div>
