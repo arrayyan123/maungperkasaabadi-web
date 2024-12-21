@@ -19,9 +19,18 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) {
-        setIsMenuOpen(false);
+    const handleResizeAndScroll = () => {
+      if (window.innerWidth < 1024) {
+        setNavbarBackground('bg-white');
+        setNavbarText('text-black');
+      } else {
+        if (window.scrollY > 50) {
+          setNavbarBackground('bg-white');
+          setNavbarText('text-black');
+        } else {
+          setNavbarBackground('bg-transparent');
+          setNavbarText('text-black');
+        }
       }
     };
 
@@ -31,24 +40,26 @@ const Navbar = () => {
         setNavbarText('text-black');
       } else {
         setNavbarBackground('bg-transparent');
-        setNavbarText('text-white');
+        setNavbarText('text-black');
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', handleResizeAndScroll);
+    window.addEventListener('scroll', handleResizeAndScroll);
+
+    handleResizeAndScroll();
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResizeAndScroll);
+      window.removeEventListener('scroll', handleResizeAndScroll);
     };
   }, []);
 
   return (
-    <nav className={`fixed lg:flex-row flex-col px-6 py-6 z-30 w-screen flex justify-between items-start lg:items-center ${navbarBackground} transition-colors duration-300`}>
+    <nav className={`relative lg:flex-row flex-col px-10 py-6 z-30 w-screen flex justify-between items-start lg:items-center ${navbarBackground} transition-colors duration-300`}>
       <div className="flex flex-row items-center lg:justify-normal justify-between lg:w-40 w-full">
         <a className="" href="#">
-          <img src={logo} className="w-40 h-30" alt="Logo" />
+          <img src={logo} className="md:w-28 w-20 h-auto" alt="Logo" />
         </a>
         <div className="lg:hidden">
           <button onClick={toggleMenu} className={`navbar-burger flex items-center ${navbarText} p-3`}>

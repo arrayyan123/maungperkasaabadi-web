@@ -1,26 +1,24 @@
-import Footer from '@/Components/Footer/Footer'
-import AboutSection from '@/Components/Home/AboutSection'
-import Carousel from '@/Components/Home/Carousel'
-import ContentSection from '@/Components/Home/ContentSection'
+import AboutusHome from '@/Components/Home/AboutusHome'
+import GridBox from '@/Components/Home/GridBox'
 import Hero from '@/Components/Home/Hero'
-import MarqueeWrapper from '@/Components/Home/MarqueeWrapper'
-import Navbar from '@/Components/Navbar/Navbar'
+import PartnerSection from '@/Components/Home/PartnerSection'
+import ProductsWrapper from '@/Components/Home/ProductsWrapper'
+import WebsiteLayout from '@/Layouts/WebsiteLayout'
 import { Head } from '@inertiajs/react'
 import React from 'react'
-MarqueeWrapper
 
 function Home() {
   return (
-    <div>
+    <>
+      <WebsiteLayout>
         <Head title='Home' />
-        <Navbar />
         <Hero />
-        <MarqueeWrapper />
-        <AboutSection />
-        <ContentSection />
-        <Carousel />
-        <Footer />
-    </div>
+        <ProductsWrapper />
+        <AboutusHome />
+        <GridBox />
+        <PartnerSection />
+      </WebsiteLayout>
+    </>
   )
 }
 

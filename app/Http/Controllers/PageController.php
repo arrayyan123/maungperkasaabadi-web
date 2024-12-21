@@ -10,4 +10,10 @@ class PageController extends Controller
     public function home(){
         return Inertia::render('Posts/Home');
     }
+    public function aboutUs(){
+        return Inertia::render('Posts/AboutUs');
+    }
+    public function blog(){
+        return Inertia::render('Posts/Blog');
+    }
 }
