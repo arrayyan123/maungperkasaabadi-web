@@ -23,40 +23,20 @@ const pattern = getImageByName('pattern_about_us');
 function TeamSection() {
     const swiperRef = useRef(null);
     const [slides, setSlides] = useState([]);
+    const [teams, setTeams] = useState([]);
 
-    const fetchSlides = async () => {
-        const data = [
-            {
-                name: "John Doe",
-                position: "CEO",
-                description: "John has over 20 years of experience leading teams to success.",
-                background: "bg-blue-400",
-            },
-            {
-                name: "Jane Smith",
-                position: "CTO",
-                description: "Jane is an expert in technology and drives innovation at our company.",
-                background: "bg-green-400",
-            },
-            {
-                name: "Mike Johnson",
-                position: "CFO",
-                description: "Mike ensures our finances are always in order and profitable.",
-                background: "bg-teal-400",
-            },
-            {
-                name: "Emily Davis",
-                position: "COO",
-                description: "Emily oversees day-to-day operations with a focus on excellence.",
-                background: "bg-cyan-400",
-            },
-        ];
 
-        setSlides(data || []);
+    const fetchTeams = async () => {
+        try {
+            const response = await fetch('/teams');
+            const data = await response.json();
+            setSlides(data);
+        } catch (error) {
+            console.error('Error fetching About Us:', error);
+        }
     };
-
     useEffect(() => {
-        fetchSlides();
+        fetchTeams();
     }, []);
 
     return (
@@ -112,8 +92,13 @@ function TeamSection() {
                     {slides.map((slide, index) => (
                         <SwiperSlide key={index}>
                             <div
-                                className={`group w-full h-[445px] cursor-pointer rounded-[30px] flex items-center justify-center relative ${slide.background}`}
+                                className={`group w-full h-[445px] cursor-pointer rounded-[30px] flex items-center justify-center relative`}
                             >
+                                <img
+                                    className="w-full h-full rounded-[20px] object-cover"
+                                    src={`/storage/${slide.image || 'Loading...'}`}
+                                    alt={slide.title}
+                                />
                                 {/* Name and Position */}
                                 <div className="absolute inset-0 flex flex-col items-start justify-end hover:motion-preset-blur-up px-4 py-6 group-hover:hidden transition-transform duration-300 group-hover:top-4 group-hover:left-4 group-hover:items-start group-hover:justify-start">
                                     <h2 className="text-white text-2xl font-bold">{slide.name}</h2>
@@ -122,13 +107,13 @@ function TeamSection() {
 
                                 {/* Hover Description */}
                                 <div className="absolute inset-0 hover:motion-preset-blur-up bg-black bg-opacity-50 flex flex-col justify-between items-start px-4 py-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-[30px]">
-                                        <div className='flex flex-col'>
-                                            <h2 className="text-white text-2xl font-bold">{slide.name}</h2>
-                                            <p className="text-white text-sm">{slide.position}</p>
-                                        </div>
-                                        <p className="text-white text-sm">
-                                            {slide.description}
-                                        </p>
+                                    <div className='flex flex-col'>
+                                        <h2 className="text-white text-2xl font-bold">{slide.name}</h2>
+                                        <p className="text-white text-sm">{slide.position}</p>
+                                    </div>
+                                    <p className="text-white text-sm">
+                                        {slide.description}
+                                    </p>
                                 </div>
                             </div>
                         </SwiperSlide>

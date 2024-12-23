@@ -13,54 +13,20 @@ function ProductsWrapper() {
     const [slides, setSlides] = useState([]);
 
     const fetchSlides = async (category) => {
-        const data = {
-            it: [
-                {
-                    title: "IT Product 1",
-                    description: "Description of IT Product 1",
-                    background: "bg-blue-400",
-                },
-                {
-                    title: "IT Product 2",
-                    description: "Description of IT Product 2",
-                    background: "bg-green-400",
-                },
-                {
-                    title: "IT Product 3",
-                    description: "Description of IT Product 3",
-                    background: "bg-teal-400",
-                },
-                {
-                    title: "IT Product 4",
-                    description: "Description of IT Product 4",
-                    background: "bg-cyan-400",
-                },
-            ],
-            nonIT: [
-                {
-                    title: "Non IT Product 1",
-                    description: "Description of Non IT Product 1",
-                    background: "bg-red-400",
-                },
-                {
-                    title: "Non IT Product 2",
-                    description: "Description of Non IT Product 2",
-                    background: "bg-yellow-400",
-                },
-                {
-                    title: "Non IT Product 3",
-                    description: "Description of Non IT Product 3",
-                    background: "bg-purple-400",
-                },
-                {
-                    title: "Non IT Product 4",
-                    description: "Description of Non IT Product 4",
-                    background: "bg-amber-400",
-                },
-            ],
-        };
+        try {
+            const response = await fetch(`/products?type=${category === 'nonIT' ? 'nonitproduct' : 'itproduct'}`);
+            const data = await response.json();
 
-        setSlides(data[category] || []);
+            const slidesData = data.map((product) => ({
+                title: product.title,
+                description: product.description,
+                image: product.image, 
+            }));
+
+            setSlides(slidesData);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
     };
     useEffect(() => {
         fetchSlides(selectedCategory);
@@ -75,8 +41,7 @@ function ProductsWrapper() {
                         Products
                     </h1>
                     <p className='text-black lg:text-[19px] text-[15px] text-justify motion motion-preset-shrink motion-delay-[2000ms]'>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt necessitatibus maxime rem repellendus, dolore nulla sapiente perferendis dolores iusto fuga cumque ex hic veritatis ipsum alias. Quas harum dignissimos mollitia?
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt necessitatibus maxime rem repellendus, dolore nulla sapiente perferendis dolores iusto fuga cumque ex hic veritatis ipsum alias. Quas harum dignissimos mollitia?
+                        Kami hadir sebagai penyedia solusi lengkap untuk memenuhi berbagai kebutuhan bisnis Anda. Dalam kategori non-IT, kami menawarkan layanan yang mencakup procurement untuk pengadaan barang dan jasa, layanan umum yang andal, serta multimedia untuk kebutuhan produksi kreatif. Selain itu, kami juga menyediakan berbagai produk dan layanan berbasis teknologi informasi (IT) yang dirancang untuk mendukung transformasi digital bisnis Anda. Dengan fokus pada kualitas, efisiensi, dan inovasi, kami siap menjadi mitra terpercaya yang membantu mendorong kesuksesan bisnis Anda di berbagai bidang.
                     </p>
                 </div>
                 <div
@@ -133,10 +98,13 @@ function ProductsWrapper() {
                     >
                         {slides.map((slide, index) => (
                             <SwiperSlide key={index}>
-                                <div
-                                    className={`group w-full h-full rounded-[20px] flex items-center justify-center relative ${slide.background}`}
-                                >
-                                    {/* Content */}
+                                <div className="group w-full h-full rounded-[20px] flex items-center justify-center relative">
+                                    <img
+                                        className="w-full h-full rounded-[20px] object-cover"
+                                        src={`/storage/${slide.image}`} // Pastikan path sesuai dengan yang dihasilkan dari backend
+                                        alt={slide.title}
+                                    />
+                                    {/* Overlay content */}
                                     <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-start justify-end rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                         <h2 className="text-white px-4 text-xl font-bold">{slide.title}</h2>
                                         <p className="text-white w-full text-sm mt-2 px-4 mb-10 overflow-hidden text-ellipsis whitespace-normal">

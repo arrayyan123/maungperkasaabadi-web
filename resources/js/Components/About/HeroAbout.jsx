@@ -25,12 +25,12 @@ function HeroAbout() {
                         <div class="absolute inset-0 bg-black opacity-50"></div>
                     </div>
                     <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
-                        <div className="p-20 flex mt-20 flex-col justify-center space-y-20 text-center">
-                            <div className="text-left md:w-1/2 w-full">
+                        <div className="lg:p-20 p-5 flex mt-20 flex-col justify-center space-y-20 text-center">
+                            <div className="text-left lg:w-1/2 w-full">
                                 <h1 className="text-5xl font-bold leading-tight mb-4 motion motion-preset-shrink">
                                     About us
                                 </h1>
-                                <p className="text-lg text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
+                                <p className="lg:text-lg text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
                                     Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque consequuntur neque alias maxime, quis
                                     dolorem nisi repellendus dolor voluptatum quod in harum ad cum distinctio doloremque error praesentium
                                     culpa! Ducimus.

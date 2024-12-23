@@ -6,6 +6,28 @@ import 'swiper/css/pagination';
 
 import { Pagination, Navigation, FreeMode, Autoplay } from 'swiper/modules';
 function PartnerSection() {
+    const [slides, setSlides] = useState([]);
+
+    const fetchSlides = async () => {
+        try {
+            const response = await fetch('/partnership');
+            const data = await response.json();
+
+            const slidesData = data.map((product) => ({
+                title: product.title,
+                description: product.description,
+                image: product.image, 
+            }));
+
+            setSlides(slidesData);
+        } catch (error) {
+            console.error('Error fetching About Us data:', error);
+        }
+    };
+    useEffect(() => {
+        fetchSlides();
+    },[])
+
     return (
         <>
             <div className='py-10'>
@@ -28,31 +50,17 @@ function PartnerSection() {
                         modules={[FreeMode, Pagination, Autoplay]}
                         className="h-full"
                     >
-                        <SwiperSlide>
-                            <div className='w-full h-[200px] bg-gray-400 flex items-center justify-center'>
-                                <h1 className='text-black text-[30px]'>Slide 1</h1>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className='w-full h-[200px] bg-gray-400 flex items-center justify-center'>
-                                <h1 className='text-black text-[30px]'>Slide 2</h1>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className='w-full h-[200px] bg-gray-400 flex items-center justify-center'>
-                                <h1 className='text-black text-[30px]'>Slide 3</h1>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className='w-full h-[200px] bg-gray-400 flex items-center justify-center'>
-                                <h1 className='text-black text-[30px]'>Slide 4</h1>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className='w-full h-[200px] bg-gray-400 flex items-center justify-center'>
-                                <h1 className='text-black text-[30px]'>Slide 5</h1>
-                            </div>
-                        </SwiperSlide>
+                        {slides.map((slide, index) => (
+                            <SwiperSlide key={index}>
+                                <div className='w-full h-[200px] bg-white flex items-center justify-center'>
+                                    <img
+                                        className="w-full h-full rounded-[20px] object-contain"
+                                        src={`/storage/${slide.image}`} 
+                                        alt={slide.title}
+                                    />
+                                </div>
+                            </SwiperSlide>
+                        ))}
                     </Swiper>
                 </div>
             </div>

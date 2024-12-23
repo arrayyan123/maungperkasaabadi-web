@@ -41,7 +41,7 @@ function GridBox() {
                         </Link>
                         <div className='flex lg:flex-row flex-col space-x-0 space-y-3 lg:space-y-0 lg:space-x-3'>
                             <div className='w-full h-[335px] rounded-[40px] flex items-end p-10 justify-start text-white bg-pink-400'>
-                                <Link href={`/aboutus`}>
+                                <Link href={`/about-us`}>
                                     <div
                                         className="relative text-white hover:font-bold cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-white before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-white after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">
                                         <span className='text-[40px] flex items-center space-x-3'><p>About us</p> <IonIcon name='globe' /></span>

@@ -3,174 +3,239 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import IonIcon from '@reacticons/ionicons';
+import { useState, useEffect } from 'react';
+import { Fade } from 'react-awesome-reveal';
+
+
+const pngImages = import.meta.glob("/public/assets/Images/*.png", { eager: true });
+const webpImages = import.meta.glob("/public/assets/Images/*.webp", { eager: true });
+const images = { ...pngImages, ...webpImages };
+
+const getImageByName = (name) => {
+    const matchingImage = Object.keys(images).find((path) => path.includes(`${name}`));
+    return matchingImage ? images[matchingImage].default || images[matchingImage] : null;
+};
+
+const logo = getImageByName('Logo_maung');
 
 export default function AuthenticatedLayout({ header, children }) {
+    const [time, setTime] = useState(new Date());
     const user = usePage().props.auth.user;
+    const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+    const [isSidebarSmaller, setIsSidebarSmaller] = useState(false);
+    const [showLogOutModal, setShowLogOutModal] = useState(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const formatTime = (date) => {
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    };
+    const formatDate = (date) => {
+        return date.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    };
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="border-b border-gray-100 bg-white">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex h-16 justify-between">
-                        <div className="flex">
-                            <div className="flex shrink-0 items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
-
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div className="hidden sm:ms-6 sm:flex sm:items-center">
-                            <div className="relative ms-3">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link
-                                            href={route('profile.edit')}
-                                        >
-                                            Profile
-                                        </Dropdown.Link>
-                                        <Dropdown.Link
-                                            href={route('logout')}
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() =>
-                                    setShowingNavigationDropdown(
-                                        (previousState) => !previousState,
-                                    )
-                                }
-                                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    className="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        className={
-                                            !showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={
-                                            showingNavigationDropdown
-                                                ? 'inline-flex'
-                                                : 'hidden'
-                                        }
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
+        <div className="flex h-screen bg-gray-100">
+            <aside className={`${isSidebarExpanded ? "w-64" : "w-16"
+                } ${isSidebarSmaller ? "md:translate-x-0 translate-x-[-100%]" : "translate-x-0"} bg-gray-900 text-white flex flex-col block transition-all duration-300`}
+            >
                 <div
-                    className={
-                        (showingNavigationDropdown ? 'block' : 'hidden') +
-                        ' sm:hidden'
-                    }
+                    className={`p-4 border-b border-blue-700 flex items-center justify-between ${isSidebarExpanded ? "space-x-8" : "space-x-1"
+                        }`}
                 >
-                    <div className="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            href={route('dashboard')}
-                            active={route().current('dashboard')}
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="border-t border-gray-200 pb-1 pt-4">
-                        <div className="px-4">
-                            <div className="text-base font-medium text-gray-800">
-                                {user.name}
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">
-                                {user.email}
-                            </div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('profile.edit')}>
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                method="post"
-                                href={route('logout')}
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
+                    <span
+                        className={`${isSidebarExpanded ? "block" : "hidden"
+                            } font-semibold text-lg flex flex-row items-center space-x-3`}
+                    >
+                        <img src={logo} className="h-9 w-auto" />
+                        <h1>Dashboard</h1>
+                    </span>
+                    <button
+                        onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+                        className="text-white flex items-center mx-auto"
+                    >
+                        <IonIcon name={isSidebarExpanded ? "arrow-down-circle-outline" : "menu-outline"} className={`text-2xl transform transition-transform duration-500 ${isSidebarExpanded ? "rotate-90" : "rotate-0"
+                            }`} />
+                    </button>
                 </div>
-            </nav>
+                <nav className="flex-1 p-0">
+                    <ul className="space-y-2">
+                        <li>
+                            <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="build"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Dashboard
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink href={route('homemanage.dashboard')} active={route().current('homemanage.dashboard')}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="home"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Home Management
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink href={route('AboutUsManage.dashboard')} active={route().current('AboutUsManage.dashboard')}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="bar-chart"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        About Management
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink href={`#`}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="business"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Blog
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink href={`#`}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="call"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Contact Management
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
+                    </ul>
+                </nav>
+                <div
+                    className={`${isSidebarExpanded ? "p-4" : "p-2"
+                        } border-t border-blue-700`}
+                >
+                    <button onClick={() => setShowLogOutModal(true)} className="w-full bg-blue-gray-600 hover:bg-blue-gray-800 py-2 rounded text-white flex items-center text-sm">
+                        <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                            <IonIcon className='text-[20px]' name="log-out-outline"></IonIcon>
+                            <span
+                                className={`${isSidebarExpanded ? "block" : "hidden"
+                                    } text-sm`}
+                            >
+                                Logout
+                            </span>
+                        </div>
+                    </button>
+                </div>
+            </aside>
+            <div className={`${isSidebarSmaller ? "absolute md:relative left-0 top-0 w-full h-screen" : "relative"
+                } flex-1 flex flex-col overflow-hidden`}>
+                <header className="flex items-center justify-around bg-gray-900 shadow px-4 py-10 sm:px-6">
+                    <div className='flex sm:flex-row items-center sm:space-x-9 flex-col sm:space-y-0 space-y-4 w-full'>
+                        <div className='flex items-center space-x-4 sm:space-x-6 w-full'>
+                            <div className='mt-1 md:hidden block'>
+                                <button onClick={() => setIsSidebarSmaller(!isSidebarSmaller)}>
+                                    <span>
+                                        <IonIcon className={`text-2xl transform transition-transform duration-500 text-white ${isSidebarSmaller ? "rotate-90" : "rotate-0"
+                                            }`} name={isSidebarSmaller ? "arrow-up-circle" : "arrow-back-circle"}></IonIcon>
+                                    </span>
+                                </button>
+                            </div>
+                            {header && (
+                                <div className="text-lg font-semibold flex items-center text-gray-900 truncate">{header}</div>
+                            )}
+                            <div className='md:block hidden'>
+                                <div className="text-center text-gray-800 flex flex-row items-center space-x-4">
+                                    <div className="text-[15px] text-white font-medium">{formatDate(time)}</div>
+                                    <div className="text-[15px] text-white font-bold">{formatTime(time)}</div>
+                                </div>
+                            </div>
+                        </div>
 
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                        {header}
+                        <Dropdown>
+                            <Dropdown.Trigger>
+                                <button className="flex items-center text-left text-sm font-medium text-white hover:text-gray-200 focus:outline-none">
+                                    {user.name}
+                                    <svg
+                                        className="ml-1 h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </button>
+                            </Dropdown.Trigger>
+                            <Dropdown.Content>
+                                <Dropdown.Link href={route('profile.edit')}>Profile</Dropdown.Link>
+                                <Dropdown.Link href={route('logout')} method="post" as="button">
+                                    Log Out
+                                </Dropdown.Link>
+                            </Dropdown.Content>
+                        </Dropdown>
                     </div>
                 </header>
+                {/* Main Content */}
+                <main className="flex-1 overflow-y-auto p-0 sm:p-0">
+                    {children}
+                </main>
+            </div>
+            {showLogOutModal && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+                    <Fade>
+                        <div className="bg-white p-6 h-auto w-96 flex flex-col items-center justify-center rounded-md shadow-md">
+                            <h3 className="text-lg font-semibold mb-4">Anda ingin Log Out ?</h3>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setShowLogOutModal(false)}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded"
+                                >
+                                    Tidak
+                                </button>
+                                <Link href={route('logout')} method="post">
+                                    <button
+                                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    >
+                                        Ya
+                                    </button>
+                                </Link>
+                            </div>
+                        </div>
+                    </Fade>
+                </div>
             )}
-
-            <main>{children}</main>
         </div>
     );
 }
