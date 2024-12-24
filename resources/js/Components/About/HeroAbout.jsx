@@ -15,13 +15,28 @@ const getImageByName = (name) => {
 const aboutBG = getImageByName('about_section')
 
 function HeroAbout() {
+    const [aboutUsContent, setAboutUsContent] = useState([]);
+
+    const fetchAboutUs = async () => {
+        try {
+            const response = await fetch('/aboutus'); 
+            const data = await response.json();
+            setAboutUsContent(data);
+        } catch (error) {
+            console.error('Error fetching About Us data:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAboutUs();
+    }, []);
 
     return (
         <>
             <div className='flex w-full h-full lg:flex-row flex-col gap-3'>
                 <div class="relative rounded-[22px] md:w-auto bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
                     <div class="absolute inset-0">
-                        <img src={aboutBG} alt="Background Image" class="object-cover object-center w-full h-full" />
+                        <img src={`/storage/${aboutUsContent[2]?.image1 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full" />
                         <div class="absolute inset-0 bg-black opacity-50"></div>
                     </div>
                     <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
@@ -41,11 +56,17 @@ function HeroAbout() {
                     </div>
                 </div>
                 <div className='flex flex-col h-auto gap-4'>
-                    <div className='lg:w-[400px] w-auto h-full rounded-[20px] flex items-center justify-center px-20 py-20 bg-gray-400'>
-                        <h1>Testing</h1>
+                    <div className='relative lg:w-[400px] w-auto h-full rounded-[22px] flex items-center justify-center px-20 py-20 bg-gray-400'>
+                        <div class="absolute inset-0 ">
+                            <img src={`/storage/${aboutUsContent[2]?.image2 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full rounded-[22px]" />
+                            <div class="absolute inset-0 bg-black opacity-50 rounded-[22px]"></div>
+                        </div>
                     </div>
-                    <div className='lg:w-[400px] w-auto h-full rounded-[20px] flex items-center justify-center px-20 py-20 bg-gray-700'>
-                        <h1>Testing</h1>
+                    <div className='relative lg:w-[400px] w-auto h-full rounded-[22px] flex items-center justify-center px-20 py-20 bg-gray-700'>
+                        <div class="absolute inset-0">
+                            <img src={`/storage/${aboutUsContent[2]?.image3 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full rounded-[22px]" />
+                            <div class="absolute inset-0 bg-black opacity-50 rounded-[22px]"></div>
+                        </div>
                     </div>
                 </div>
             </div>

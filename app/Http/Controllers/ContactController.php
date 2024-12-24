@@ -30,7 +30,7 @@ class ContactController extends Controller
                  ])->render());
         });
     
-        return response()->json(['message' => 'Message sent successfully.']);
+        return redirect()->back()->with('message', 'Message sent successfully.');
     }
 
     public function index()
@@ -60,7 +60,7 @@ class ContactController extends Controller
                     ])->render());
             });
     
-            return response()->json(['message' => 'Reply sent successfully.']);
+            return redirect()->back()->with('message', 'Reply sent successfully.');
         } catch (\Exception $e) {
             Log::error('Failed to send reply email: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to send reply email.'], 500);

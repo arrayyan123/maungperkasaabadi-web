@@ -40,7 +40,7 @@ function ProductsWrapper() {
                     <h1 className='lg:text-[42px] text-[27px] font-bold motion motion-preset-shrink'>
                         Products
                     </h1>
-                    <p className='text-black lg:text-[19px] text-[15px] text-justify motion motion-preset-shrink motion-delay-[2000ms]'>
+                    <p className='text-black lg:text-[19px] text-[13px] text-justify motion motion-preset-shrink motion-delay-[2000ms]'>
                         Kami hadir sebagai penyedia solusi lengkap untuk memenuhi berbagai kebutuhan bisnis Anda. Dalam kategori non-IT, kami menawarkan layanan yang mencakup procurement untuk pengadaan barang dan jasa, layanan umum yang andal, serta multimedia untuk kebutuhan produksi kreatif. Selain itu, kami juga menyediakan berbagai produk dan layanan berbasis teknologi informasi (IT) yang dirancang untuk mendukung transformasi digital bisnis Anda. Dengan fokus pada kualitas, efisiensi, dan inovasi, kami siap menjadi mitra terpercaya yang membantu mendorong kesuksesan bisnis Anda di berbagai bidang.
                     </p>
                 </div>
@@ -77,11 +77,11 @@ function ProductsWrapper() {
                         }}
                         breakpoints={{
                             '@0.00': {
-                                slidesPerView: 2,
+                                slidesPerView: 1,
                                 spaceBetween: 1,
                             },
                             '@0.75': {
-                                slidesPerView: 2,
+                                slidesPerView: 1,
                                 spaceBetween: 1,
                             },
                             '@1.00': {

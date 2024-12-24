@@ -31,7 +31,7 @@ function AboutusHome() {
         <>
             <div className='flex flex-col mt-10 h-auto w-auto items-center'>
                 <div className='flex flex-col text-black lg:px-20 px-3'>
-                    <h1 className='text-[40px] font-bold'>Why Choose Us</h1>
+                    <h1 className='text-[40px] font-bold'>Kenapa memilih kami</h1>
                     <p className='lg:text-left text-justify'>
                         Dengan keahlian yang luas, kami menyediakan solusi terbaik mulai dari pengembangan teknologi hingga layanan profesional di berbagai sektor. Komitmen kami adalah memberikan pelayanan unggul yang mendukung kebutuhan bisnis Anda.
                     </p>

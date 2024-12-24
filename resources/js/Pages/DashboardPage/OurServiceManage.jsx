@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import moment from 'moment';
 import OurServiceForm from '@/Components/Admin/OurServiceForm';
+import { Head } from '@inertiajs/react';
 
 function OurServiceManage() {
     const [services, setServices] = useState([]);
@@ -54,6 +55,7 @@ function OurServiceManage() {
                     </h2>
                 }
             >
+                <Head title="Service Management" />
                 <div className="p-6 bg-gradient-to-b from-gray-800 to-gray-900 text-white min-h-screen">
                     <OurServiceForm
                         OurService={selectedService}
