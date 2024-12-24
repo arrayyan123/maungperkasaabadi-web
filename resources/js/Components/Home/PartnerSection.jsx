@@ -16,7 +16,7 @@ function PartnerSection() {
             const slidesData = data.map((product) => ({
                 title: product.title,
                 description: product.description,
-                image: product.image, 
+                image: product.image,
             }));
 
             setSlides(slidesData);
@@ -26,7 +26,7 @@ function PartnerSection() {
     };
     useEffect(() => {
         fetchSlides();
-    },[])
+    }, [])
 
     return (
         <>
@@ -34,16 +34,26 @@ function PartnerSection() {
                 <span className='flex flex-col gap-4'>
                     <h1 className='text-black font-bold text-[40px]'>Partner & Team</h1>
                     <p className='text-black'>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nobis praesentium laudantium dolore blanditiis, nam corporis? Aperiam velit inventore placeat tenetur ea libero accusamus eveniet hic at itaque aliquam, alias fuga. Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora ducimus dolorum architecto esse soluta ullam aperiam autem quibusdam veritatis. Reiciendis ipsum quo laborum ad adipisci, sed praesentium ea perferendis? Officiis?
+                        Kami percaya bahwa kolaborasi adalah kunci keberhasilan. Bersama dengan mitra strategis dan tim profesional yang berpengalaman, kami membangun solusi inovatif untuk setiap tantangan bisnis Anda.
+                        Tim kami terdiri dari individu yang berdedikasi, berbakat, dan memiliki keahlian di berbagai bidang, siap memberikan layanan terbaik dengan komitmen penuh terhadap kualitas dan hasil.
+                        Sebagai mitra terpercaya, kami bekerja sama dengan berbagai perusahaan dan organisasi untuk menciptakan sinergi yang saling menguntungkan, membawa dampak positif dan pertumbuhan berkelanjutan.
                     </p>
                 </span>
                 <div className='my-20'>
                     <Swiper
-                        slidesPerView={3}
-                        spaceBetween={10}
                         loop={true}
-                        autoplay={true}
                         freeMode={true}
+                        freeModeMomentum={true}  // Tambahkan opsi momentum
+                        autoplay={{
+                            delay: 0,
+                            disableOnInteraction: false,
+                        }}
+                        loopAddBlankSlides={false}  // Nonaktifkan loopAddBlankSlides
+                        cssMode={true}
+                        slidesPerView={2}  // Sesuaikan dengan jumlah slide per view
+                        speed={1500}  // Kurangi kecepatan transisi
+                        grabCursor={true}
+                        loopAdditionalSlides={3}  // Sesuaikan jumlah slide tambahan untuk loop
                         pagination={{
                             clickable: true,
                         }}
@@ -55,7 +65,7 @@ function PartnerSection() {
                                 <div className='w-full h-[200px] bg-white flex items-center justify-center'>
                                     <img
                                         className="w-full h-full rounded-[20px] object-contain"
-                                        src={`/storage/${slide.image}`} 
+                                        src={`/storage/${slide.image}`}
                                         alt={slide.title}
                                     />
                                 </div>

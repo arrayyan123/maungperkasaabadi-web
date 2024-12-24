@@ -62,7 +62,7 @@ function WebsiteLayout({ children }) {
     return (
         <div className='bg-white'>
             {/* Navbar */}
-            <nav className={`relative lg:flex-row overflow-x-hidden flex-col px-10 w-full max-w-full py-6 z-30 w-screen flex justify-between  items-center ${navbarBackground} transition-colors duration-300`}>
+            <nav className={`relative lg:flex-row overflow-x-hidden flex-col px-10  max-w-full py-6 z-30 w-screen flex justify-between  items-center ${navbarBackground} transition-colors duration-300`}>
                 <div className="flex flex-row items-center lg:justify-normal justify-between lg:w-40 w-full">
                     <a className="" href="#">
                         <img src={logo} className="md:w-28 w-20 h-auto" alt="Logo" />
@@ -99,7 +99,7 @@ function WebsiteLayout({ children }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                 </svg>
                             </li>
-                            <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href="#">Contact us</a></li>
+                            <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/contactus`}>Contact us</a></li>
                         </div>
                         <li
                             className="lg:mt-2 mt-4"

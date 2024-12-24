@@ -1,85 +1,86 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-function ProductForm({ product, onClose, onUpdate }) {
+function BlogForm({ Blog, onClose, onUpdate }) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        type: 'nonitproduct',
         image: null,
     });
 
     useEffect(() => {
-        if (product) {
+        if (Blog) {
             setFormData({
-                title: product.title,
-                description: product.description || '',
-                type: product.type,
+                title: Blog.title || '',
+                description: Blog.description || '',
                 image: null,
             });
         } else {
             setFormData({
                 title: '',
                 description: '',
-                type: 'nonitproduct',
                 image: null,
             });
         }
-    }, [product]);
+    }, [Blog]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      };
+
+    const handleDescriptionChange = (value) => {
+        setFormData({ ...formData, description: value });
     };
 
     const handleFileChange = (e) => {
-        setFormData({ ...formData, image: e.target.files[0] });
+        const { name } = e.target;
+        setFormData({ ...formData, [name]: e.target.files[0] });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
-        const data = new FormData();
-    
-        if (formData.title) data.append('title', formData.title);
-        if (formData.description) data.append('description', formData.description);
-        if (formData.type) data.append('type', formData.type);
+
+        if (!formData.title || !formData.description) {
+            alert('Title and description are required.');
+            return;
+        }
+
+        const dataToSend = new FormData();
+
+        dataToSend.append('title', formData.title);
+        dataToSend.append('description', formData.description);
+
         if (formData.image) {
-            data.append('image', formData.image); 
-        } else if (product && product.image) {
-            data.append('image', product.image); 
+            dataToSend.append('image', formData.image);
+        } else {
+            dataToSend.append('old_image', Blog.image);
         }
-            
-        for (let pair of data.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
-    
+
         try {
-            const response = product
-                ? await axios.post(`/products/${product.id}`, data, {
-                    headers: { 
+            const response = Blog
+                ? await axios.post(`/blogs/${Blog.id}`, dataToSend, {
+                    headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 })
-                : await axios.post('/products', data, {
-                    headers: {         
+                : await axios.post('/blogs', dataToSend, {
+                    headers: {
                         'Content-Type': 'multipart/form-data',
-                        'X-CSRF-TOKEN': csrfToken, 
+                        'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-    
-            console.log('Response:', response.data); 
-            alert('Product saved successfully');
+
+            alert('Blog saved successfully');
             onUpdate();
             onClose();
         } catch (error) {
-            console.error('Error saving product:', error);
-            if (error.response && error.response.data.errors) {
-                console.error('Validation errors:', error.response.data.errors);
-            }
-            alert('Failed to save product. Please check the required fields.');
+            console.error('Error saving Blog:', error);
+            alert('Failed to save Blog. Please check the required fields.');
         }
     };
 
@@ -89,42 +90,47 @@ function ProductForm({ product, onClose, onUpdate }) {
             className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
-                {product ? 'Edit Product' : 'Add New Product'}
+                {Blog ? 'Edit Blog' : 'Add New Blog'}
             </h3>
+
+            {/* Title */}
             <div className="mb-4">
                 <label className="block mb-1">Title</label>
                 <input
                     type="text"
-                    name="title"
+                    name='title'
                     value={formData.title}
                     onChange={handleChange}
                     required
                     className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    placeholder="Enter the title"
                 />
             </div>
+
+            {/* Description */}
             <div className="mb-4">
                 <label className="block mb-1">Description</label>
-                <textarea
-                    name="description"
+                <ReactQuill
+                    theme="snow"
                     value={formData.description}
-                    onChange={handleChange}
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
-                ></textarea>
+                    onChange={handleDescriptionChange}
+                    className="mt-2"
+                />
             </div>
-            <div className="mb-4">
-                <label className="block mb-1">Type</label>
-                <select
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
-                >
-                    <option value="nonitproduct">Non IT Product</option>
-                    <option value="itproduct">IT Product</option>
-                </select>
-            </div>
+
+            {/* Image 1 */}
             <div className="mb-4">
                 <label className="block mb-1">Image</label>
+                {Blog && Blog.image && (
+                    <div className="mb-2">
+                        <img
+                            src={`/storage/${Blog.image}`}
+                            alt="Current Image"
+                            className="w-20 h-20 object-cover rounded"
+                        />
+                        <p className="text-gray-400 text-sm">Current image</p>
+                    </div>
+                )}
                 <input
                     type="file"
                     name="image"
@@ -133,12 +139,14 @@ function ProductForm({ product, onClose, onUpdate }) {
                     className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
                 />
             </div>
+
+            {/* Buttons */}
             <div className="flex space-x-4">
                 <button
                     type="submit"
                     className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                    {product ? 'Update' : 'Submit'}
+                    {Blog ? 'Update' : 'Submit'}
                 </button>
                 <button
                     type="button"
@@ -149,7 +157,7 @@ function ProductForm({ product, onClose, onUpdate }) {
                 </button>
             </div>
         </form>
-    );
+    )
 }
 
-export default ProductForm;
+export default BlogForm

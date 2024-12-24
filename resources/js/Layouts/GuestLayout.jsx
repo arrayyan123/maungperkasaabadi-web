@@ -1,12 +1,25 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
 
+const svgImages = import.meta.glob('/public/assets/Images/*.svg', { eager: true });
+const pngImages = import.meta.glob('/public/assets/Images/*.png', { eager: true });
+
+const images = { ...svgImages, ...pngImages };
+
+const getImageByName = (name) => {
+    const matchingImage = Object.keys(images).find((path) => path.includes(`${name}`));
+    return matchingImage ? images[matchingImage].default || images[matchingImage] : null;
+};
+
+const logo = getImageByName('Logo_maung');
+
+
 export default function GuestLayout({ children }) {
     return (
         <div className="flex min-h-screen flex-col items-center bg-gray-100 pt-6 sm:justify-center sm:pt-0">
             <div>
                 <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-gray-500" />
+                    <img src={logo} className='h-28 w-auto text-gray-500' alt="" />
                 </Link>
             </div>
 

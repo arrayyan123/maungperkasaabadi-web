@@ -110,7 +110,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink href={`#`}>
+                            <NavLink href={route('BlogManage.dashboard')} active={route().current('BlogManage.dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
                                     <IonIcon className='text-[20px]' name="business"></IonIcon>
                                     <span
@@ -123,7 +123,7 @@ export default function AuthenticatedLayout({ header, children }) {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink href={`#`}>
+                            <NavLink href={route('contact.dashboard')} active={route().current('contact.dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
                                     <IonIcon className='text-[20px]' name="call"></IonIcon>
                                     <span

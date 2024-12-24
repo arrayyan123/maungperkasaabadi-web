@@ -21,7 +21,7 @@ function Hero() {
         <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
           {showWelcome ? (
             <div
-              className="lg:p-0 p-10 text-5xl motion motion-preset-shrink font-bold transition-opacity duration-1000 opacity-100"
+              className="lg:p-0 p-10 lg:text-5xl text-xl motion motion-preset-shrink font-bold transition-opacity duration-1000 opacity-100"
               style={{ opacity: showWelcome ? 1 : 0 }}
             >
               WELCOME
@@ -33,9 +33,7 @@ function Hero() {
                   Maung Perkasa Abadi
                 </h1>
                 <p className="lg:text-lg text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque consequuntur neque alias maxime, quis
-                  dolorem nisi repellendus dolor voluptatum quod in harum ad cum distinctio doloremque error praesentium
-                  culpa! Ducimus.
+                  Kami adalah perusahaan yang bergerak di berbagai bidang, mencakup layanan IT dan Non-IT. Dengan keahlian yang luas, kami menyediakan solusi terbaik mulai dari pengembangan teknologi hingga layanan profesional di berbagai sektor. Komitmen kami adalah memberikan pelayanan unggul yang mendukung kebutuhan bisnis Anda.
                 </p>
               </div>
               <div className="relative mx-auto animate-bounce">

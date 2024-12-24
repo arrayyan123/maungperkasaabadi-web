@@ -106,6 +106,6 @@ class TeamsController extends Controller
 
         $member->delete();
 
-        return response()->json(['message' => 'partner berhasil di hapus']);
+        return response()->json(['message' => 'Member berhasil di hapus']);
     }
 }

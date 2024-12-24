@@ -16,7 +16,7 @@ function AboutusHome() {
 
     const fetchAboutUs = async () => {
         try {
-            const response = await fetch('/aboutus'); // Update with your actual endpoint
+            const response = await fetch('/aboutus'); 
             const data = await response.json();
             setAboutUsContent(data);
         } catch (error) {
@@ -33,7 +33,7 @@ function AboutusHome() {
                 <div className='flex flex-col text-black lg:px-20 px-3'>
                     <h1 className='text-[40px] font-bold'>Why Choose Us</h1>
                     <p className='lg:text-left text-justify'>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Possimus sequi temporibus reiciendis, pariatur beatae qui officiis dicta saepe ipsa expedita sapiente in nostrum repellat hic incidunt quas eos corporis exercitationem!≈
+                        Dengan keahlian yang luas, kami menyediakan solusi terbaik mulai dari pengembangan teknologi hingga layanan profesional di berbagai sektor. Komitmen kami adalah memberikan pelayanan unggul yang mendukung kebutuhan bisnis Anda.
                     </p>
                 </div>
                 {/* Konten satu */}

@@ -45,7 +45,7 @@ function TeamSection() {
             <div className="text-left z-20">
                 <h1 className="text-4xl text-black font-bold mb-4">Our Team</h1>
                 <p className="text-gray-700">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi, ex minima eaque illum exercitationem eum aliquam quidem optio ab dicta maiores praesentium pariatur voluptates dolor amet! Beatae quos alias excepturi.
+                    Didukung oleh tim ahli yang berdedikasi, kami selalu siap memberikan pelayanan terbaik dengan fokus pada hasil yang optimal.
                 </p>
             </div>
 

@@ -26,14 +26,12 @@ function HeroAbout() {
                     </div>
                     <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
                         <div className="lg:p-20 p-5 flex mt-20 flex-col justify-center space-y-20 text-center">
-                            <div className="text-left lg:w-1/2 w-full">
+                            <div className="text-left lg:w-auto w-full">
                                 <h1 className="text-5xl font-bold leading-tight mb-4 motion motion-preset-shrink">
                                     About us
                                 </h1>
                                 <p className="lg:text-lg text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
-                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Itaque consequuntur neque alias maxime, quis
-                                    dolorem nisi repellendus dolor voluptatum quod in harum ad cum distinctio doloremque error praesentium
-                                    culpa! Ducimus.
+                                    Kami adalah perusahaan yang bergerak di berbagai bidang, mencakup layanan IT dan Non-IT. Dengan keahlian yang luas, kami menyediakan solusi terbaik mulai dari pengembangan teknologi hingga layanan profesional di berbagai sektor. Komitmen kami adalah memberikan pelayanan unggul yang mendukung kebutuhan bisnis Anda.
                                 </p>
                             </div>
                             <div className="relative mx-auto animate-bounce">
