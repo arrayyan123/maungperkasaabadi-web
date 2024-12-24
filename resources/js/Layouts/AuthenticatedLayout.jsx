@@ -135,6 +135,19 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </div>
                             </NavLink>
                         </li>
+                        <li>
+                            <NavLink href={route('servicesManage.dashboard')} active={route().current('servicesManage.dashboard')}>
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="construct"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Our Service
+                                    </span>
+                                </div>
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
                 <div

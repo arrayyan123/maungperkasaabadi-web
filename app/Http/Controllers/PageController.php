@@ -19,4 +19,7 @@ class PageController extends Controller
     public function contactUs(){
         return Inertia::render('Posts/ContactUs');
     }
+    public function ourService(){
+        return Inertia::render('Posts/OurService');
+    }
 }

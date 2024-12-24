@@ -404,9 +404,9 @@ function HomeManage() {
                                             ))}
                                         </tbody>
                                     </table>
-                                    {aboutUs.length === 0 && (
+                                    {partnerships.length === 0 && (
                                         <p className="text-center text-gray-400 mt-4">
-                                            No About Us items found.
+                                            No partnerships items found.
                                         </p>
                                     )}
                                 </div>

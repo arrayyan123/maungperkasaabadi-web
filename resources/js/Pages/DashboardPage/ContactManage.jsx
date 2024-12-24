@@ -12,6 +12,7 @@ function ContactManage({ contacts }) {
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [filters, setFilters] = useState({ name: '', email: '', created_at: '' }); // State untuk filter
     const { post, processing } = useForm();
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
@@ -96,6 +97,26 @@ function ContactManage({ contacts }) {
         );
     };
 
+    const filteredContacts = contacts.filter((contact) => {
+        const { name, email, created_at } = filters;
+        const matchesName = name
+            ? contact.name.toLowerCase().includes(name.toLowerCase())
+            : true;
+        const matchesEmail = email
+            ? contact.email.toLowerCase().includes(email.toLowerCase())
+            : true;
+        const matchesDate = created_at
+            ? moment(contact.created_at).format('YYYY-MM-DD') === created_at
+            : true;
+
+        return matchesName && matchesEmail && matchesDate;
+    });
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    };
+
     return (
         <>
             <AuthenticatedLayout
@@ -112,8 +133,32 @@ function ContactManage({ contacts }) {
                         <div className="p-0  w-full text-black min-h-screen">
                             <div className='px-6 pt-8'>
                                 <h1 className="text-2xl font-bold mb-5">Contacts</h1>
-
-                                <div className="flex items-center justify-between mb-4">
+                                <div className="flex flex-col md:flex-row gap-4 mb-5">
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        placeholder="Filter by Name"
+                                        value={filters.name}
+                                        onChange={handleFilterChange}
+                                        className="border border-gray-300 rounded-md p-2 flex-1"
+                                    />
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        placeholder="Filter by Email"
+                                        value={filters.email}
+                                        onChange={handleFilterChange}
+                                        className="border border-gray-300 rounded-md p-2 flex-1"
+                                    />
+                                    <input
+                                        type="date"
+                                        name="created_at"
+                                        value={filters.created_at}
+                                        onChange={handleFilterChange}
+                                        className="border border-gray-300 rounded-md p-2 flex-1"
+                                    />
+                                </div>
+                                <div className="flex lg:flex-row flex-col lg:space-y-0 space-y-3 items-center justify-between mb-4">
                                     <button
                                         onClick={toggleSelectAll}
                                         className="px-4 py-2 bg-blue-500 text-white rounded-md"
@@ -137,7 +182,7 @@ function ContactManage({ contacts }) {
                                 {/* Contact List */}
                                 <section className="w-full lg:w-1/3 border-r bg-white overflow-y-auto lg:max-h-[76vh] md:max-h-[77vh] sm:max-h-[28vh] max-h-[26vh]">
                                     <div>
-                                        {contacts.map((contact) => (
+                                        {filteredContacts.map((contact) => (
                                             <div
                                                 key={contact.id}
                                                 className={`p-4 border-b cursor-pointer ${selectedContact?.id === contact.id

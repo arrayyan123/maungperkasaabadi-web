@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\OurServiceController;
 
 
 Route::get('/', function () {
@@ -28,6 +29,8 @@ Route::get('/', [PageController::class, 'home'])->name('home-page');
 Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about.page');
 Route::get('/blog', [PageController::class, 'blog'])->name('blog.page');
 Route::get('/contactus', [PageController::class, 'contactUs'])->name('contact.page');
+Route::get('/ourservice', [PageController::class, 'ourService'])->name('service.page');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
@@ -43,6 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/teams/{team}', [TeamsController::class, 'update']);
     Route::resource('blogs', BlogController::class)->except(['create', 'edit']);
     Route::post('/blogs/{blogId}', [BlogController::class, 'update']);
+    Route::resource('services', OurServiceController::class)->except(['show', 'create', 'edit']);
+    Route::post('/services/{serviceId}', [OurServiceController::class, 'update']);
 
     Route::get('/admin/contacts', [ContactController::class, 'index'])->name('contact.dashboard');
     Route::post('/admin/contacts/{contact}/reply', [ContactController::class, 'reply']);
@@ -57,6 +62,7 @@ Route::resource('aboutus', AboutUsController::class)->except(['show', 'create', 
 Route::resource('partnership', PartnerController::class)->except(['show', 'create', 'edit', 'store', 'destroy', 'update']);
 Route::resource('teams', TeamsController::class)->except(['show', 'create', 'edit', 'store', 'destroy', 'update']);
 Route::resource('blogs', BlogController::class)->except(['create', 'edit', 'store', 'destroy', 'update']);
+Route::resource('services', OurServiceController::class)->except(['create', 'edit', 'store', 'destroy', 'update']);
 
 Route::get('/email-test', function(){
     $name = "Arrayyan";
@@ -78,6 +84,9 @@ Route::get('/aboutusmanage', function() {
 Route::get('/blogmanage', function() {
     return Inertia::render('DashboardPage/BlogManage');
 })->middleware(['auth', 'verified'])->name('BlogManage.dashboard');
+Route::get('/ourservicemanage', function() {
+    return Inertia::render('DashboardPage/OurServiceManage');
+})->middleware(['auth', 'verified'])->name('servicesManage.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

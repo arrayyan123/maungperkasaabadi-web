@@ -43,19 +43,32 @@ function PartnerSection() {
                     <Swiper
                         loop={true}
                         freeMode={true}
-                        freeModeMomentum={true}  // Tambahkan opsi momentum
                         autoplay={{
                             delay: 0,
                             disableOnInteraction: false,
                         }}
-                        loopAddBlankSlides={false}  // Nonaktifkan loopAddBlankSlides
-                        cssMode={true}
-                        slidesPerView={2}  // Sesuaikan dengan jumlah slide per view
-                        speed={1500}  // Kurangi kecepatan transisi
-                        grabCursor={true}
-                        loopAdditionalSlides={3}  // Sesuaikan jumlah slide tambahan untuk loop
+                        slidesPerView={3}
+                        speed={1500}
                         pagination={{
                             clickable: true,
+                        }}
+                        breakpoints={{
+                            0: {
+                                slidesPerView: 1,
+                                spaceBetween: 5,
+                            },
+                            768: {
+                                slidesPerView: 2,
+                                spaceBetween: 10,
+                            },
+                            1024: {
+                                slidesPerView: 3,
+                                spaceBetween: 15,
+                            },
+                            1440: {
+                                slidesPerView: 3,
+                                spaceBetween: 20,
+                            },
                         }}
                         modules={[FreeMode, Pagination, Autoplay]}
                         className="h-full"
