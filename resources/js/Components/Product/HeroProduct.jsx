@@ -70,9 +70,11 @@ function HeroProduct({ isProductSelected, onProductSelect }) {
                                                     {item.product_name}
                                                 </span>
                                             </div>
-                                            <div
-                                                dangerouslySetInnerHTML={{ __html: item.product_description.substring(0, 200) + (item.product_description.length > 200 ? '...' : '') }}
-                                            />
+                                            <div className="text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
+                                                <div
+                                                    dangerouslySetInnerHTML={{ __html: item.product_description.substring(0, 200) + (item.product_description.length > 200 ? '...' : '') }}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className='flex lg:w-1/2 lg:h-full h-0 w-full lg:justify-end items-end lg:py-20'>

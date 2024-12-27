@@ -65,11 +65,11 @@ function HeroBlog({ isBlogSelected, onBlogSelect }) {
                                                     {item.title}
                                                 </span>
                                             </div>
-                                            <p className="text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
+                                            <div className="text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
                                                 <div
                                                     dangerouslySetInnerHTML={{ __html: item.description.substring(0, 200) + (item.description.length > 200 ? '...' : '') }}
                                                 />
-                                            </p>
+                                            </div>
                                         </div>
                                     </div>
 

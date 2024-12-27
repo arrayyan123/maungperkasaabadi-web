@@ -3,6 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons';
 import moment from 'moment';
+import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react";
+
 
 function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onProductDeselect }) {
   const [products, setProducts] = useState([]);
@@ -77,7 +79,7 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
             <h2 className="text-3xl font-bold">Product</h2>
           </div>
 
-          <div className="flex lg:flex-row flex-col gap-5 justify-center mb-4">
+          <div className="flex flex-col gap-5 items-center justify-center mb-4 w-full">
             <input
               type="text"
               value={searchQuery}
@@ -86,15 +88,19 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
               className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
 
-            <select
-              value={filterType}
-              onChange={(e) => handleFilterChange(e.target.value)}
-              className="px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-            >
-              <option value="all">All Products</option>
-              <option value="itproduct">IT Products</option>
-              <option value="nonitproduct">Non-IT Products</option>
-            </select>
+            <Tabs value={filterType} className="w-full ">
+              <TabsHeader>
+                <Tab value="all" onClick={() => handleFilterChange('all')}>
+                  All Products
+                </Tab>
+                <Tab value="itproduct" onClick={() => handleFilterChange('itproduct')}>
+                  IT Products
+                </Tab>
+                <Tab value="nonitproduct" onClick={() => handleFilterChange('nonitproduct')}>
+                  Non-IT Products
+                </Tab>
+              </TabsHeader>
+            </Tabs>
           </div>
 
           {/* Daftar Blog */}
@@ -145,8 +151,8 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                     key={index + 1}
                     onClick={() => handlePageChange(index + 1)}
                     className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-700 text-gray-300'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-700 text-gray-300'
                       }`}
                   >
                     {index + 1}

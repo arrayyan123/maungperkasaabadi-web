@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import MainProduct from '@/Components/Product/MainProduct';
 import HeroProduct from '@/Components/Product/HeroProduct';
+import ProductSection01 from '@/Components/Product/ProductSection01';
 
 
 function ProductDetails() {
@@ -23,6 +24,7 @@ function ProductDetails() {
     <>
       <WebsiteLayout>
         <Head title="Product" />
+        <ProductSection01 />
         {!isProductSelected && <HeroProduct onProductSelect={handleProductSelect} />}        
         <MainProduct
           isProductSelected={isProductSelected}
