@@ -1,6 +1,7 @@
 import IonIcon from '@reacticons/ionicons';
 import React, { useState, useEffect } from 'react';
-import { Dropdown } from "flowbite-react";
+import axios from "axios";
+
 
 const svgImages = import.meta.glob('/public/assets/Images/*.svg', { eager: true });
 const pngImages = import.meta.glob('/public/assets/Images/*.png', { eager: true });
@@ -17,7 +18,34 @@ const logo = getImageByName('Logo_maung');
 function WebsiteLayout({ children }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [navbarBackground, setNavbarBackground] = useState('bg-transparent');
-    const [navbarText, setNavbarText] = useState('text-white')
+    const [navbarText, setNavbarText] = useState('text-white');
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        setIsLoading(true);
+        try {
+            const response = await axios.post("/subscribe", {
+                name,
+                email,
+            });
+
+            alert("Thank you for subscribing! Please check your email for confirmation.");
+            setName("");
+            setEmail("");
+        } catch (error) {
+            if (error.response && error.response.data) {
+                alert(error.response.data.message || "Failed to subscribe");
+            } else {
+                alert("An error occurred");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -62,10 +90,10 @@ function WebsiteLayout({ children }) {
     return (
         <div className='bg-white'>
             {/* Navbar */}
-            <nav className={`relative lg:flex-row overflow-x-hidden flex-col px-10  max-w-full py-6 z-30 w-screen flex justify-between  items-center ${navbarBackground} transition-colors duration-300`}>
+            <nav className={`relative lg:flex-row overflow-x-hidden flex-col px-5  max-w-full py-6 z-30 w-screen flex justify-between  items-center ${navbarBackground} transition-colors duration-300`}>
                 <div className="flex flex-row items-center lg:justify-normal justify-between lg:w-40 w-full">
                     <a className="" href="#">
-                        <img src={logo} className="md:w-28 w-20 h-auto" alt="Logo" />
+                        <img src={logo} className="md:w-30 w-24 h-auto" alt="Logo" />
                     </a>
                     <div className="lg:hidden">
                         <button onClick={toggleMenu} className={`navbar-burger flex items-center ${navbarText} p-3`}>
@@ -80,21 +108,27 @@ function WebsiteLayout({ children }) {
                 <div className="flex lg:flex-row flex-col lg:justify-between md:mt-0 mt-8 space-x-10">
                     <ul className={`${isMenuOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
                         } lg:opacity-100 lg:max-h-full flex lg:mx-auto lg:flex-row flex-col items-center lg:w-auto lg:space-x-6 space-x-2 overflow-hidden transition-all duration-300 ease-in-out`}>
-                        <div className='flex flex-row gap-2'>
+                        <div className='flex flex-row gap-3'>
                             <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/`}>Home</a></li>
-                            <li className="text-gray-300">
+                            <li className="text-gray-300 md:block hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                </svg>
+                            </li>
+                            <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/product-detail`}>Products</a></li>
+                            <li className="text-gray-300 md:block hidden">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                 </svg>
                             </li>
                             <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/about-us`}>About Us</a></li>
-                            <li className="text-gray-300">
+                            <li className="text-gray-300 md:block hidden">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                 </svg>
                             </li>
                             <li><a className={`text-sm ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/blog`}>Blog</a></li>
-                            <li className="text-gray-300">
+                            <li className="text-gray-300 md:block hidden">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                 </svg>
@@ -123,8 +157,59 @@ function WebsiteLayout({ children }) {
 
             {/* footer */}
             <footer class="bg-gray-100 dark:bg-gray-900">
+                <div className="w-full p-5">
+                    <span className="flex flex-row items-center gap-3">
+                        <IonIcon className="text-2xl" name="mail" />
+                        <h1 className="text-2xl font-bold">Subscribe to our Newsletter</h1>
+                    </span>
+                    <p className="mb-4">
+                        Tetap Up to date dengan perkembangan mengenai perusahaan kami.
+                    </p>
+                    <form onSubmit={handleSubmit}>
+                        <div className="flex md:flex-row flex-col items-center gap-4 max-w-2xl">
+                            <div className=" w-full">
+                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                    Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="name"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                    required
+                                />
+                            </div>
+                            <div className=" w-full">
+                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                    required
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                className={`px-4 py-2 mt-6 text-white rounded-md ${isLoading ? "bg-gray-400" : "bg-blue-600"
+                                    }`}
+                                disabled={isLoading}
+                            >
+                                <span className="flex flex-row gap-4 items-center">
+                                    <p>{isLoading ? "Subscribing..." : "Subscribe"}</p>
+                                    <IonIcon name="send" />
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <div className='flex md:flex-row flex-col items-center justify-between'>
-                    <div class="max-w-5xl mt-5 flex md:flex-row flex-col md:space-x-7 px-4 py-2 sm:px-6 lg:px-9">
+                    <div class="max-w-5xl mt- flex md:flex-row flex-col md:space-x-7 px-4 py-2 sm:px-6 lg:px-9">
                         <div class="flex text-teal-600 dark:text-teal-300">
                             <img className='w-[150px] h-auto' src={logo} alt="logo maung" />
                         </div>

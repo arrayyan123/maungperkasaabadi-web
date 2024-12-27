@@ -27,7 +27,8 @@ export default withMT({
         require('daisyui'),
         require('flowbite/plugin'),
         flowbite.plugin(),
-        tailwindcssMotion
+        tailwindcssMotion,
+        require('@tailwindcss/typography')
     ],
     darkMode: 'false',
 });

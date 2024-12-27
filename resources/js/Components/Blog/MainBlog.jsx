@@ -37,7 +37,7 @@ function MainBlog({ isBlogSelected, selectedBlog, onBlogSelect, onBlogDeselect }
       <section className="py-6 sm:py-12 dark:bg-gray-100 dark:text-gray-800">
         <div className="container lg:p-6 p-2 mx-auto space-y-8">
           <div className="space-y-2 text-center">
-            <h2 className="text-3xl font-bold">Blog Terakhir</h2>
+            <h2 className="text-3xl font-bold">Blog</h2>
           </div>
 
           {/* Daftar Blog */}
@@ -92,6 +92,7 @@ function MainBlog({ isBlogSelected, selectedBlog, onBlogSelect, onBlogDeselect }
               />
               <p className="text-gray-800">
                 <div
+                  className="prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{ __html: selectedBlog.description }}
                 />
               </p>

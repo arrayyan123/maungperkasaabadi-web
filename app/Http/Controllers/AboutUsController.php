@@ -13,7 +13,7 @@ class AboutUsController extends Controller
      */
     public function index()
     {
-        $aboutUs = AboutUs::all(); // Fetch all AboutUs records
+        $aboutUs = AboutUs::all(); 
         return response()->json($aboutUs);
     }
 
@@ -22,21 +22,18 @@ class AboutUsController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate incoming request
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image1' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'image2' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'image3' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image1' => 'required|image',
+            'image2' => 'required|image',
+            'image3' => 'required|image',
         ]);
 
-        // Upload images and store their paths
         $validated['image1'] = $request->file('image1')->store('about_us', 'public');
         $validated['image2'] = $request->file('image2')->store('about_us', 'public');
         $validated['image3'] = $request->file('image3')->store('about_us', 'public');
 
-        // Create a new About Us record
         AboutUs::create($validated);
 
         return response()->json(['success' => 'About Us created successfully!']);
@@ -47,24 +44,21 @@ class AboutUsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Temukan record berdasarkan ID
         $aboutUs = AboutUs::findOrFail($id);
 
-        // Validasi request
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
-            'image1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'image2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'image3' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image1' => 'nullable|image',
+            'image2' => 'nullable|image',
+            'image3' => 'nullable|image',
         ]);
 
-        // Update gambar hanya jika ada file baru yang diunggah
         if ($request->hasFile('image1')) {
-            Storage::disk('public')->delete($aboutUs->image1); // Hapus gambar lama
+            Storage::disk('public')->delete($aboutUs->image1);
             $validated['image1'] = $request->file('image1')->store('about_us', 'public');
         } else {
-            $validated['image1'] = $aboutUs->image1; // Gunakan gambar lama
+            $validated['image1'] = $aboutUs->image1;
         }
 
         if ($request->hasFile('image2')) {
@@ -93,13 +87,8 @@ class AboutUsController extends Controller
     public function destroy($id)
     {
         $aboutUs = AboutUs::findOrFail($id);
-
-        // Delete associated images
         Storage::disk('public')->delete([$aboutUs->image1, $aboutUs->image2, $aboutUs->image3]);
-
-        // Delete the record
         $aboutUs->delete();
-
         return response()->json(['success' => 'About Us deleted successfully!']);
     }
 }

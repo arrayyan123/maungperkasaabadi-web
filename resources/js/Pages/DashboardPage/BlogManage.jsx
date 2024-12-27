@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons'
 import moment from 'moment';
 import BlogForm from '@/Components/Admin/BlogForm';
+import Newsletter from '@/Components/Admin/Newsletter';
 
 
 function BlogManage() {
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [blog, setBlog] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(3);
+    const formRef = useRef(null);
 
     const fetchBlog = async () => {
         try {
@@ -26,8 +30,20 @@ function BlogManage() {
     }, [refresh]);
 
     const handleEditBlog = (item) => {
-        console.log('Editing Blog:', item);
         setSelectedBlog(item);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentBlogs = blog.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(blog.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
     };
 
     const handleDeleteBlog = async (blogId) => {
@@ -61,13 +77,15 @@ function BlogManage() {
             >
                 <Head title="Blog Management" />
                 <div className='p-6 bg-gradient-to-b from-gray-800 to-gray-900 text-white min-h-screen'>
-                    <BlogForm 
-                        Blog={selectedBlog}
-                        onClose={() => setSelectedBlog(null)}
-                        onUpdate={() => setRefresh(!refresh)}
-                    />
+                    <div ref={formRef}>
+                        <BlogForm
+                            Blog={selectedBlog}
+                            onClose={() => setSelectedBlog(null)}
+                            onUpdate={() => setRefresh(!refresh)}
+                        />
+                    </div>
                     <div className="my-6">
-                        <h3 className="text-xl font-semibold mb-4">Team Member List</h3>
+                        <h3 className="text-xl font-semibold mb-4">Blog List</h3>
                         <div className="overflow-x-auto">
                             <table className="min-w-full bg-gray-800 text-white rounded-lg shadow-md">
                                 <thead>
@@ -80,13 +98,14 @@ function BlogManage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {blog.map((item) => (
+                                    {currentBlogs.map((item) => (
                                         <tr key={item.id} className="border-t border-gray-700 hover:bg-gray-700">
                                             <td className="py-3 px-4">{item.title}</td>
                                             <td className="py-3 px-4">
-                                            <div
-                                                dangerouslySetInnerHTML={{ __html: item.description }}
-                                            />
+                                                <div
+                                                    className="prose prose-sm max-w-none text-white"
+                                                    dangerouslySetInnerHTML={{ __html: item.description }}
+                                                />
                                             </td>
                                             <td className="py-3 px-4">
                                                 {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
@@ -119,10 +138,28 @@ function BlogManage() {
                             </table>
                             {blog.length === 0 && (
                                 <p className="text-center text-gray-400 mt-4">
-                                    No Team member items found.
+                                    No Blog items found.
                                 </p>
                             )}
                         </div>
+                        <div className="flex justify-center mt-4">
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    className={`mx-1 px-3 py-1 rounded ${
+                                        currentPage === index + 1
+                                            ? 'bg-blue-500 text-white'
+                                            : 'bg-gray-700 text-gray-300'
+                                    }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <Newsletter />
                     </div>
                 </div>
             </AuthenticatedLayout>

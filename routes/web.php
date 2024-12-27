@@ -14,7 +14,11 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TeamsController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\OurServiceController;
+use App\Http\Controllers\ProductDetailController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\SubscriberController;
 
+Route::post('/subscribe', [SubscriberController::class, 'store']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -30,6 +34,7 @@ Route::get('/about-us', [PageController::class, 'aboutUs'])->name('about.page');
 Route::get('/blog', [PageController::class, 'blog'])->name('blog.page');
 Route::get('/contactus', [PageController::class, 'contactUs'])->name('contact.page');
 Route::get('/ourservice', [PageController::class, 'ourService'])->name('service.page');
+Route::get('/product-detail', [PageController::class, 'productDetails'])->name('productDetail.page');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -52,7 +57,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/contacts', [ContactController::class, 'index'])->name('contact.dashboard');
     Route::post('/admin/contacts/{contact}/reply', [ContactController::class, 'reply']);
     Route::delete('/admin/contacts/{contact}', [ContactController::class, 'destroy']);
-    
+    Route::resource('product_details', ProductDetailController::class)->except(['create', 'edit']);
+    Route::post('/product_details/{productDetailId}', [ProductDetailController::class, 'update']);
+    Route::post('/admin/newsletter', [NewsletterController::class, 'store']);
+    Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
+    Route::delete('/admin/newsletter/{id}', [NewsletterController::class, 'destroy']);
 });
 
 Route::post('/contact-us', [ContactController::class, 'store']);
@@ -63,6 +72,8 @@ Route::resource('partnership', PartnerController::class)->except(['show', 'creat
 Route::resource('teams', TeamsController::class)->except(['show', 'create', 'edit', 'store', 'destroy', 'update']);
 Route::resource('blogs', BlogController::class)->except(['create', 'edit', 'store', 'destroy', 'update']);
 Route::resource('services', OurServiceController::class)->except(['create', 'edit', 'store', 'destroy', 'update']);
+Route::resource('product_details', ProductDetailController::class)->except(['create', 'edit', 'store', 'destroy', 'update']);
+
 
 Route::get('/email-test', function(){
     $name = "Arrayyan";
@@ -87,6 +98,9 @@ Route::get('/blogmanage', function() {
 Route::get('/ourservicemanage', function() {
     return Inertia::render('DashboardPage/OurServiceManage');
 })->middleware(['auth', 'verified'])->name('servicesManage.dashboard');
+Route::get('/productdetailmanage', function() {
+    return Inertia::render('DashboardPage/ProductDetailManage');
+})->middleware(['auth', 'verified'])->name('productDetailManage.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons'
@@ -30,7 +30,7 @@ function HomeManage() {
     const [openProductManage, setOpenProductManage] = useState(false);
     const [openAboutUsManage, setOpenAboutUsManage] = useState(false);
     const [openPartnership, setOpenPartnership] = useState(false);
-
+    const formRef = useRef(null);
 
     const toggleOpenAboutUsManage = () => {
         setOpenAboutUsManage(!openAboutUsManage);
@@ -82,14 +82,23 @@ function HomeManage() {
 
     const handleEdit = (product) => {
         setSelectedProduct(product);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
     const handleEditAboutUs = (item) => {
         setSelectedAboutUs(item);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
 
     const handleEditPartnership = (partnership) => {
-        setSelectedPartnership(partnership)
+        setSelectedPartnership(partnership);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     useEffect(() => {
@@ -239,11 +248,13 @@ function HomeManage() {
                     </div>
                     {openProductManage && (
                         <div>
-                            <ProductForm
-                                product={selectedProduct}
-                                onClose={() => setSelectedProduct(null)}
-                                onUpdate={() => setRefresh(!refresh)}
-                            />
+                            <div ref={formRef}>
+                                <ProductForm
+                                    product={selectedProduct}
+                                    onClose={() => setSelectedProduct(null)}
+                                    onUpdate={() => setRefresh(!refresh)}
+                                />
+                            </div>
                             <div className="my-6">
                                 <h3 className="text-xl font-semibold mb-4">Products List</h3>
                                 <div className="overflow-x-auto">
@@ -294,11 +305,13 @@ function HomeManage() {
                     )}
                     {openAboutUsManage && (
                         <div>
-                            <AboutUsForm
-                                aboutUs={selectedAboutUs}
-                                onClose={() => setSelectedAboutUs(null)}
-                                onUpdate={() => setRefresh(!refresh)}
-                            />
+                            <div ref={formRef}>
+                                <AboutUsForm
+                                    aboutUs={selectedAboutUs}
+                                    onClose={() => setSelectedAboutUs(null)}
+                                    onUpdate={() => setRefresh(!refresh)}
+                                />
+                            </div>
                             <div className="my-6">
                                 <h3 className="text-xl font-semibold mb-4">About Us List</h3>
                                 <div className="overflow-x-auto">
@@ -356,11 +369,13 @@ function HomeManage() {
                     )}
                     {openPartnership && (
                         <div>
-                            <PartnershipForm
-                                Partnership={selectedPartnership}
-                                onClose={() => setSelectedPartnership(null)}
-                                onUpdate={() => setRefresh(!refresh)}
-                            />
+                            <div ref={formRef}>
+                                <PartnershipForm
+                                    Partnership={selectedPartnership}
+                                    onClose={() => setSelectedPartnership(null)}
+                                    onUpdate={() => setRefresh(!refresh)}
+                                />
+                            </div>
                             <div className="my-6">
                                 <h3 className="text-xl font-semibold mb-4">About Us List</h3>
                                 <div className="overflow-x-auto">

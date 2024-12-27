@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
@@ -12,7 +12,7 @@ function ContactManage({ contacts }) {
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [filters, setFilters] = useState({ name: '', email: '', created_at: '' }); // State untuk filter
+    const [filters, setFilters] = useState({ name: '', email: '', created_at: '' }); 
     const { post, processing } = useForm();
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 

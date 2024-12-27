@@ -33,9 +33,12 @@ class ContactController extends Controller
         return redirect()->back()->with('message', 'Message sent successfully.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $contacts = Contact::orderBy('created_at', 'desc')->get();
+        if ($request->wantsJson()) {
+            return response()->json($contacts);
+        }
         return inertia('DashboardPage/ContactManage', ['contacts' => $contacts]);
     }
 

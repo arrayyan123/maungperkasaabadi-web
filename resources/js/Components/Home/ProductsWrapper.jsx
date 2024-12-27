@@ -6,6 +6,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 
 import { Pagination, Navigation } from 'swiper/modules';
+import { Link } from '@inertiajs/react';
 
 function ProductsWrapper() {
     const swiperRef = useRef(null);
@@ -20,7 +21,7 @@ function ProductsWrapper() {
             const slidesData = data.map((product) => ({
                 title: product.title,
                 description: product.description,
-                image: product.image, 
+                image: product.image,
             }));
 
             setSlides(slidesData);
@@ -40,7 +41,7 @@ function ProductsWrapper() {
                     <h1 className='lg:text-[42px] text-[27px] font-bold motion motion-preset-shrink'>
                         Products
                     </h1>
-                    <p className='text-black lg:text-[19px] text-[13px] text-justify motion motion-preset-shrink motion-delay-[2000ms]'>
+                    <p className='text-black lg:text-[19px] text-[13px] text-justify motion motion-preset-shrink motion-delay-[1000ms]'>
                         Kami hadir sebagai penyedia solusi lengkap untuk memenuhi berbagai kebutuhan bisnis Anda. Dalam kategori non-IT, kami menawarkan layanan yang mencakup procurement untuk pengadaan barang dan jasa, layanan umum yang andal, serta multimedia untuk kebutuhan produksi kreatif. Selain itu, kami juga menyediakan berbagai produk dan layanan berbasis teknologi informasi (IT) yang dirancang untuk mendukung transformasi digital bisnis Anda. Dengan fokus pada kualitas, efisiensi, dan inovasi, kami siap menjadi mitra terpercaya yang membantu mendorong kesuksesan bisnis Anda di berbagai bidang.
                     </p>
                 </div>
@@ -98,20 +99,22 @@ function ProductsWrapper() {
                     >
                         {slides.map((slide, index) => (
                             <SwiperSlide key={index}>
-                                <div className="group w-full h-full rounded-[20px] flex items-center justify-center relative">
-                                    <img
-                                        className="w-full h-full rounded-[20px] object-cover"
-                                        src={`/storage/${slide.image}`} // Pastikan path sesuai dengan yang dihasilkan dari backend
-                                        alt={slide.title}
-                                    />
-                                    {/* Overlay content */}
-                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-start justify-end rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                        <h2 className="text-white px-4 text-xl font-bold">{slide.title}</h2>
-                                        <p className="text-white w-full text-sm mt-2 px-4 mb-10 overflow-hidden text-ellipsis whitespace-normal">
-                                            {slide.description}
-                                        </p>
+                                <Link href="/product-detail">
+                                    <div className="group w-full h-full rounded-[20px] flex items-center justify-center relative">
+                                        <img
+                                            className="w-full h-full rounded-[20px] object-cover"
+                                            src={`/storage/${slide.image}`}
+                                            alt={slide.title}
+                                        />
+                                        {/* Overlay content */}
+                                        <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-start justify-end rounded-[20px] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <h2 className="text-white px-4 text-xl font-bold">{slide.title}</h2>
+                                            <p className="text-white w-full text-sm mt-2 px-4 mb-10 overflow-hidden text-ellipsis whitespace-normal">
+                                                {slide.description}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </SwiperSlide>
                         ))}
                     </Swiper>

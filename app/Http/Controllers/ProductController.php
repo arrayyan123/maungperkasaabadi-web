@@ -34,7 +34,7 @@ class ProductController extends Controller
             $validated['image'] = $request->file('image')->store('products', 'public'); // Simpan di storage/public/products
         }
 
-        $product = Product::create($validated);
+        Product::create($validated);
 
         return redirect()->back()->with('success', 'About Us created successfully!');
     }
@@ -68,11 +68,10 @@ class ProductController extends Controller
         ]);
     }
 
-    // Delete a product
     public function destroy(Product $product)
     {
         if ($product->image) {
-            Storage::disk('public')->delete($product->image); // Delete image from storage
+            Storage::disk('public')->delete($product->image); 
         }
 
         $product->delete();

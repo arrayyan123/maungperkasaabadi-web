@@ -84,7 +84,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
             className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
-                {OurService ? 'Edit OurService' : 'Add New OurService'}
+                {OurService ? 'Edit Our Service' : 'Add New Our Service'}
             </h3>
 
             {/* Title */}

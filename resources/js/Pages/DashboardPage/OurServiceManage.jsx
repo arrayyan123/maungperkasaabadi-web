@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import moment from 'moment';
 import OurServiceForm from '@/Components/Admin/OurServiceForm';
@@ -8,6 +8,7 @@ function OurServiceManage() {
     const [services, setServices] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [selectedService, setSelectedService] = useState(null);
+    const formRef = useRef(null);
 
     const fetchService = async () => {
         try {
@@ -41,6 +42,9 @@ function OurServiceManage() {
 
     const handleEditService = (item) => {
         setSelectedService(item);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
 
     useEffect(() => {
@@ -57,11 +61,13 @@ function OurServiceManage() {
             >
                 <Head title="Service Management" />
                 <div className="p-6 bg-gradient-to-b from-gray-800 to-gray-900 text-white min-h-screen">
-                    <OurServiceForm
-                        OurService={selectedService}
-                        onClose={() => setSelectedService(null)}
-                        onUpdate={() => setRefresh(!refresh)}
-                    />
+                    <div ref={formRef}>
+                        <OurServiceForm
+                            OurService={selectedService}
+                            onClose={() => setSelectedService(null)}
+                            onUpdate={() => setRefresh(!refresh)}
+                        />
+                    </div>
                     <div className="my-6">
                         <h3 className="text-xl font-semibold mb-4">Link Website List</h3>
                         <div className="overflow-x-auto">

@@ -22,4 +22,7 @@ class PageController extends Controller
     public function ourService(){
         return Inertia::render('Posts/OurService');
     }
+    public function productDetails(){
+        return Inertia::render('Posts/ProductDetails');
+    }
 }
