@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/product_details/{productDetailId}', [ProductDetailController::class, 'update']);
     Route::post('/admin/newsletter', [NewsletterController::class, 'store']);
     Route::get('/admin/newsletter', [NewsletterController::class, 'index']);
+    Route::get('/admin/subscriber', [SubscriberController::class, 'index']);
+    Route::delete('/admin/subscriber/{id}', [SubscriberController::class, 'destroy']);
     Route::delete('/admin/newsletter/{id}', [NewsletterController::class, 'destroy']);
 });
 

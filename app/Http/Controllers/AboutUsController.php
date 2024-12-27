@@ -75,7 +75,6 @@ class AboutUsController extends Controller
             $validated['image3'] = $aboutUs->image3;
         }
 
-        // Update record
         $aboutUs->update($validated);
 
         return response()->json(['success' => 'About Us updated successfully!']);

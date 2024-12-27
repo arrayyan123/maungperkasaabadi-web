@@ -32,7 +32,7 @@ function AboutUsManage() {
     };
 
     const handleDeleteTeams = async (memberId) => {
-        if (window.confirm('Are you sure you want to delete this About Us item?')) {
+        if (window.confirm('Are you sure you want to delete this Team Member?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 await fetch(`/aboutus/${memberId}`, {
@@ -42,11 +42,11 @@ function AboutUsManage() {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-                alert('About Us item deleted successfully!');
+                alert('Team Member deleted successfully!');
                 setRefresh(!refresh);
             } catch (error) {
-                console.error('Error deleting About Us item:', error);
-                alert('Failed to delete About Us item. Please try again.');
+                console.error('Error deleting Team Member:', error);
+                alert('Failed to delete Team Member. Please try again.');
             }
         }
     };

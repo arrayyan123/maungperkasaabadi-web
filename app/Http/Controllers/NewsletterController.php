@@ -41,7 +41,7 @@ class NewsletterController extends Controller
 
     public function index()
     {
-        $newsletter = Newsletter::all();
+        $newsletter = Newsletter::orderBy('created_at', 'desc')->get();
         return response()->json($newsletter);
     }
 

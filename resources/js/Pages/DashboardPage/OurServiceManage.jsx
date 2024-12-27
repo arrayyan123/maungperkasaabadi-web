@@ -31,11 +31,11 @@ function OurServiceManage() {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-                alert('About Us item deleted successfully!');
+                alert('Service deleted successfully!');
                 setRefresh(!refresh);
             } catch (error) {
-                console.error('Error deleting product item:', error);
-                alert('Failed to delete product item. Please try again.');
+                console.error('Error deleting Service:', error);
+                alert('Failed to delete Service. Please try again.');
             }
         }
     };

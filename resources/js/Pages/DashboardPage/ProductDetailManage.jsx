@@ -34,7 +34,7 @@ function ProductDetailManage() {
     };
 
     const handleDeleteProduct = async (ProductDetailId) => {
-        if (window.confirm('Are you sure you want to delete this About Us item?')) {
+        if (window.confirm('Are you sure you want to delete this Product Detail?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 await fetch(`/product_details/${ProductDetailId}`, {
@@ -47,8 +47,8 @@ function ProductDetailManage() {
                 alert('Product Detail deleted successfully!');
                 setRefresh(!refresh);
             } catch (error) {
-                console.error('Error deleting Product Detail item:', error);
-                alert('Failed to delete Product Detail item. Please try again.');
+                console.error('Error deleting Product Detail:', error);
+                alert('Failed to delete Product Detail. Please try again.');
             }
         }
     };

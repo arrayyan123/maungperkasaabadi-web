@@ -18,7 +18,21 @@ class SubscriberController extends Controller
 
         $subscriber = Subscriber::create($validated);
         Mail::to($subscriber->email)->send(new ThankYouForSubscribing($subscriber->name, $subscriber->email));
-        
+
         return response()->json(['message' => 'You have successfully subscribed to the newsletter']);
+    }
+
+    public function index()
+    {
+        $subscriber = Subscriber::orderBy('created_at', 'desc')->get();
+        return response()->json($subscriber);
+    }
+
+    public function destroy($id)
+    {
+        $subscriber = Subscriber::findOrFail($id);
+        $subscriber->delete();
+
+        return response()->json(['message' => 'Subscriber deleted successfully']);
     }
 }
