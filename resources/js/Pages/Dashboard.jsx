@@ -36,7 +36,7 @@ export default function Dashboard({ auth }) {
         >
             <Head title="Dashboard" />
 
-            <div className="py-12">
+            <div className="py-12 px-4">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900">
@@ -52,13 +52,13 @@ export default function Dashboard({ auth }) {
                                 key={item.id}
                                 className="p-4 bg-white shadow rounded-xl border motion-preset-shrink"
                             >
-                                <h2 className="text-lg font-semibold text-gray-700">
+                                <h2 className="text-sm font-semibold text-gray-700">
                                     {item.name} ({item.email})
                                 </h2>
                                 <p className="text-sm text-gray-500">
                                     {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
                                 </p>
-                                <p className="mt-2 text-gray-700">{item.message.substring(0, 200) + (item.message.length > 200 ? '...' : '')}</p>
+                                <p className="mt-2 text-gray-700">{item.message.substring(0, 50) + (item.message.length > 50 ? '...' : '')}</p>
                             </div>
                         ))}
                     </div>

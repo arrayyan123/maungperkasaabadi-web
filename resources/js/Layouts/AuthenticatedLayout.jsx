@@ -1,3 +1,4 @@
+import ColorCustomizer from '@/Components/Admin/ColorCustomizer';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
@@ -6,6 +7,7 @@ import { Link, usePage } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons';
 import { useState, useEffect } from 'react';
 import { Fade } from 'react-awesome-reveal';
+
 
 
 const pngImages = import.meta.glob("/public/assets/Images/*.png", { eager: true });
@@ -25,6 +27,9 @@ export default function AuthenticatedLayout({ header, children }) {
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
     const [isSidebarSmaller, setIsSidebarSmaller] = useState(false);
     const [showLogOutModal, setShowLogOutModal] = useState(false);
+    const [sidebarColor, setSidebarColor] = useState('#1a202c');
+    const [topBarColor, setTopBarColor] = useState('#1a202c');
+    const [showCustomizer, setShowCustomizer] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -46,8 +51,11 @@ export default function AuthenticatedLayout({ header, children }) {
 
     return (
         <div className="flex h-screen bg-gray-100">
-            <aside className={`${isSidebarExpanded ? "w-64" : "w-16"
-                } ${isSidebarSmaller ? "md:translate-x-0 translate-x-[-100%]" : "translate-x-0"} bg-gray-900 text-white flex flex-col block transition-all duration-300`}
+            {/* sidebar */}
+            <aside
+                className={`${isSidebarExpanded ? "w-64" : "w-16"
+                    } ${isSidebarSmaller ? "md:translate-x-0 translate-x-[-100%]" : "translate-x-0"}  text-white flex flex-col block transition-all duration-300`}
+                style={{ backgroundColor: sidebarColor }}
             >
                 <div
                     className={`p-4 border-b border-blue-700 flex items-center justify-between ${isSidebarExpanded ? "space-x-8" : "space-x-1"
@@ -180,9 +188,13 @@ export default function AuthenticatedLayout({ header, children }) {
                     </button>
                 </div>
             </aside>
+            {/* top bar */}
             <div className={`${isSidebarSmaller ? "absolute md:relative left-0 top-0 w-full h-screen" : "relative"
                 } flex-1 flex flex-col overflow-hidden`}>
-                <header className="flex items-center justify-around bg-gray-900 shadow px-4 py-10 sm:px-6">
+                <header
+                    className="flex items-center justify-around  shadow px-4 py-10 sm:px-6"
+                    style={{ backgroundColor: topBarColor }}
+                >
                     <div className='flex sm:flex-row items-center sm:space-x-9 flex-col sm:space-y-0 space-y-4 w-full'>
                         <div className='flex items-center space-x-4 sm:space-x-6 w-full'>
                             <div className='mt-1 md:hidden block'>
@@ -196,6 +208,14 @@ export default function AuthenticatedLayout({ header, children }) {
                             {header && (
                                 <div className="text-lg font-semibold flex items-center text-gray-900 truncate">{header}</div>
                             )}
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => setShowCustomizer(true)}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                >
+                                    Kustomisasi Warna
+                                </button>
+                            </div>
                             <div className='md:block hidden'>
                                 <div className="text-center text-gray-800 flex flex-row items-center space-x-4">
                                     <div className="text-[15px] text-white font-medium">{formatDate(time)}</div>
@@ -260,6 +280,22 @@ export default function AuthenticatedLayout({ header, children }) {
                             </div>
                         </div>
                     </Fade>
+                </div>
+            )}
+            {showCustomizer && (
+                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white p-6 rounded shadow-lg">
+                        <ColorCustomizer
+                            setSidebarColor={setSidebarColor}
+                            setTopBarColor={setTopBarColor}
+                        />
+                        <button
+                            onClick={() => setShowCustomizer(false)}
+                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded"
+                        >
+                            Tutup
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
