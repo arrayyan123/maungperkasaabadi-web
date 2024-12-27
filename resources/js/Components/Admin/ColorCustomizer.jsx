@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SketchPicker } from 'react-color'; // Install library: npm install react-color
+import { SketchPicker } from 'react-color'; 
 
 export default function ColorCustomizer({ setSidebarColor, setTopBarColor }) {
     const [sidebarColor, setLocalSidebarColor] = useState('#1a202c');
@@ -7,12 +7,12 @@ export default function ColorCustomizer({ setSidebarColor, setTopBarColor }) {
 
     const handleSidebarColorChange = (color) => {
         setLocalSidebarColor(color.hex);
-        setSidebarColor(color.hex); // Update the parent state
+        setSidebarColor(color.hex); 
     };
 
     const handleTopBarColorChange = (color) => {
         setLocalTopBarColor(color.hex);
-        setTopBarColor(color.hex); // Update the parent state
+        setTopBarColor(color.hex);
     };
 
     return (
