@@ -5,8 +5,9 @@ import IonIcon from '@reacticons/ionicons';
 import moment from 'moment';
 
 function MainBlog({ isBlogSelected, selectedBlog, onBlogSelect, onBlogDeselect }) {
-  //const [selectedBlog, setSelectedBlog] = useState(null); 
   const [blog, setBlog] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(8);
 
   const fetchBlog = async () => {
     try {
@@ -18,19 +19,19 @@ function MainBlog({ isBlogSelected, selectedBlog, onBlogSelect, onBlogDeselect }
     }
   };
 
-  const fetchBlogById = async (blogId) => {
-    try {
-      const response = await fetch(`/blogs/${blogId}`);
-      const data = await response.json();
-      setSelectedBlog(data);
-    } catch (error) {
-      console.error('Error fetching blog by ID:', error);
-    }
-  };
-
   useEffect(() => {
     fetchBlog();
   }, []);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentBlogs = blog.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(blog.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+      setCurrentPage(pageNumber);
+  };
 
   return (
     <div>
@@ -42,36 +43,54 @@ function MainBlog({ isBlogSelected, selectedBlog, onBlogSelect, onBlogDeselect }
 
           {/* Daftar Blog */}
           {!isBlogSelected && (
-            <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4">
-              {blog.map((item) => (
-                <article
-                  key={item.id}
-                  className="flex flex-col dark:bg-gray-50 cursor-pointer"
-                  onClick={() => onBlogSelect(item)}
-                >
-                  <a
-                    rel="noopener noreferrer"
-                    href="#"
-                    aria-label={`Buka blog ${item.title}`}
+            <div>
+              <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4">
+                {currentBlogs.map((item) => (
+                  <article
+                    key={item.id}
+                    className="flex flex-col dark:bg-gray-50 cursor-pointer"
+                    onClick={() => onBlogSelect(item)}
                   >
-                    <img
-                      alt={item.title}
-                      className="object-cover w-full h-52 dark:bg-gray-500"
-                      src={`/storage/${item.image}`}
-                    />
-                  </a>
-                  <div className="flex flex-col flex-1 p-6">
-                    <h3 className="flex-1 py-2 text-lg font-semibold leading-snug">
-                      {item.title}
-                    </h3>
-                    <div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-600">
-                      <span>
-                        {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
-                      </span>
+                    <a
+                      rel="noopener noreferrer"
+                      href="#"
+                      aria-label={`Buka blog ${item.title}`}
+                    >
+                      <img
+                        alt={item.title}
+                        className="object-cover w-full h-52 dark:bg-gray-500"
+                        src={`/storage/${item.image}`}
+                      />
+                    </a>
+                    <div className="flex flex-col flex-1 p-6">
+                      <div className="relative text-black hover:font-bold cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-black before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-black after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%] mb-2">
+                        <span className="text-xl font-bold leading-tight motion motion-preset-shrink">
+                          {item.title}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap justify-between pt-3 space-x-2 text-xs dark:text-gray-600">
+                        <span>
+                          {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                ))}
+              </div>
+              <div className="flex justify-center mt-4">
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => handlePageChange(index + 1)}
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-gray-700 text-gray-300'
+                      }`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 

@@ -7,6 +7,8 @@ function ProductDetailManage() {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [product, setProduct] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(3);
     const formRef = useRef(null);
 
     const fetchProduct = async () => {
@@ -50,6 +52,16 @@ function ProductDetailManage() {
             }
         }
     };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentProducts = product.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(product.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
     return (
         <div>
             <AuthenticatedLayout
@@ -82,7 +94,7 @@ function ProductDetailManage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {product.map((item) => (
+                                    {currentProducts.map((item) => (
                                         <tr key={item.id} className="border-t border-gray-700 hover:bg-gray-700">
                                             <td className="py-3 px-4">{item.product_name}</td>
                                             <td className="py-3 px-4">
@@ -125,6 +137,21 @@ function ProductDetailManage() {
                                     No Team member items found.
                                 </p>
                             )}
+                        </div>
+                        <div className="flex justify-center mt-4">
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    onClick={() => handlePageChange(index + 1)}
+                                    className={`mx-1 px-3 py-1 rounded ${
+                                        currentPage === index + 1
+                                            ? 'bg-blue-500 text-white'
+                                            : 'bg-gray-700 text-gray-300'
+                                    }`}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>

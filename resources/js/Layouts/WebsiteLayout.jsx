@@ -21,6 +21,7 @@ function WebsiteLayout({ children }) {
     const [navbarText, setNavbarText] = useState('text-white');
     const [name, setName] = useState("");
     const [email, setEmail] = useState('');
+    const [activeLink, setActiveLink] = useState('/');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e) => {
@@ -92,7 +93,7 @@ function WebsiteLayout({ children }) {
             {/* Navbar */}
             <nav className={`relative lg:flex-row overflow-x-hidden flex-col px-5  max-w-full py-6 z-30 w-screen flex justify-between  items-center ${navbarBackground} transition-colors duration-300`}>
                 <div className="flex flex-row items-center lg:justify-normal justify-between lg:w-40 w-full">
-                    <a className="" href="#">
+                    <a className="" href="/">
                         <img src={logo} className="md:w-30 w-24 h-auto" alt="Logo" />
                     </a>
                     <div className="lg:hidden">

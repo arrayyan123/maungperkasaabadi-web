@@ -32,6 +32,24 @@ export default function AuthenticatedLayout({ header, children }) {
     const [showCustomizer, setShowCustomizer] = useState(false);
 
     useEffect(() => {
+        const storedSidebarColor = localStorage.getItem('sidebarColor');
+        const storedTopBarColor = localStorage.getItem('topBarColor');
+
+        if (storedSidebarColor) setSidebarColor(storedSidebarColor);
+        if (storedTopBarColor) setTopBarColor(storedTopBarColor);
+    }, []);
+
+    const handleSidebarColorChange = (color) => {
+        setSidebarColor(color);
+        localStorage.setItem('sidebarColor', color); // Simpan ke localStorage
+    };
+
+    const handleTopBarColorChange = (color) => {
+        setTopBarColor(color);
+        localStorage.setItem('topBarColor', color); // Simpan ke localStorage
+    };
+
+    useEffect(() => {
         const interval = setInterval(() => {
             setTime(new Date());
         }, 1000);
@@ -169,6 +187,22 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </div>
                             </NavLink>
                         </li>
+                        <div
+                            className={`${isSidebarExpanded ? "p-2" : "p-2"
+                                }`}
+                        >
+                            <button onClick={() => setShowCustomizer(true)} className="w-full bg-blue-500 hover:bg-blue-gray-800 py-2 rounded text-white flex items-center text-sm">
+                                <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
+                                    <IonIcon className='text-[20px]' name="color-fill"></IonIcon>
+                                    <span
+                                        className={`${isSidebarExpanded ? "block" : "hidden"
+                                            } text-sm`}
+                                    >
+                                        Customize Theme
+                                    </span>
+                                </div>
+                            </button>
+                        </div>
                     </ul>
                 </nav>
                 <div
@@ -208,14 +242,6 @@ export default function AuthenticatedLayout({ header, children }) {
                             {header && (
                                 <div className="text-lg font-semibold flex items-center text-gray-900 truncate">{header}</div>
                             )}
-                            <div className="flex justify-between items-center">
-                                <button
-                                    onClick={() => setShowCustomizer(true)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
-                                >
-                                    Kustomisasi Warna
-                                </button>
-                            </div>
                             <div className='md:block hidden'>
                                 <div className="text-center text-gray-800 flex flex-row items-center space-x-4">
                                     <div className="text-[15px] text-white font-medium">{formatDate(time)}</div>
@@ -259,7 +285,7 @@ export default function AuthenticatedLayout({ header, children }) {
                 </main>
             </div>
             {showLogOutModal && (
-                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+                <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-50 flex items-center justify-center">
                     <Fade>
                         <div className="bg-white p-6 h-auto w-96 flex flex-col items-center justify-center rounded-md shadow-md">
                             <h3 className="text-lg font-semibold mb-4">Anda ingin Log Out ?</h3>
@@ -286,8 +312,8 @@ export default function AuthenticatedLayout({ header, children }) {
                 <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded shadow-lg">
                         <ColorCustomizer
-                            setSidebarColor={setSidebarColor}
-                            setTopBarColor={setTopBarColor}
+                            setSidebarColor={handleSidebarColorChange}
+                            setTopBarColor={handleTopBarColorChange}
                         />
                         <button
                             onClick={() => setShowCustomizer(false)}
