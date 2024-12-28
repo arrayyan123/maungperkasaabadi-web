@@ -9,7 +9,8 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
         product_name: '',
         product_description: '',
         type_product: 'nonitproduct',
-        image: null,
+        images: [],
+        delete_images: [],
     });
 
     useEffect(() => {
@@ -18,14 +19,16 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
                 product_name: productDetail.product_name,
                 product_description: productDetail.product_description || '',
                 type_product: productDetail.type_product,
-                image: null,
+                images: [],
+                delete_images: [],
             });
         } else {
             setFormData({
                 product_name: '',
                 product_description: '',
                 type_product: 'nonitproduct',
-                image: null,
+                images: [],
+                delete_images: [],
             });
         }
     }, [productDetail]);
@@ -40,26 +43,37 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
     };
 
     const handleFileChange = (e) => {
-        setFormData({ ...formData, image: e.target.files[0] });
+        const files = Array.from(e.target.files);
+        setFormData((prev) => ({
+            ...prev,
+            images: files,
+        }));
+    };
+    
+    const handleRemoveImage = (imageId) => {
+        setFormData((prev) => ({
+            ...prev,
+            delete_images: [...prev.delete_images, imageId],
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
     
         const data = new FormData();
-    
-        // if (formData.product_name) data.append('product_name', formData.product_name);
-        // if (formData.product_description) data.append('product_description', formData.product_description);
-        // if (formData.type_product) data.append('type_product', formData.type_product);
 
         data.append('product_name', formData.product_name);
         data.append('product_description', formData.product_description);
         data.append('type_product', formData.type_product);
         
-        if (formData.image) {
-            data.append('image', formData.image); 
-        } else if (productDetail && productDetail.image) {
-            data.append('old_image', productDetail.image); 
+        formData.images.forEach((image, index) => {
+            data.append(`images[${index}]`, image);
+        });
+
+        if (formData.delete_images.length > 0) {
+            formData.delete_images.forEach((id) => {
+                data.append('delete_images[]', id);
+            });
         }
     
         try {
@@ -130,24 +144,31 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
                 </select>
             </div>
             <div className="mb-4">
-                <label className="block mb-1">Image</label>
-                {productDetail && productDetail.image && (
-                    <div className="mb-2">
-                        <img
-                            src={`/storage/${productDetail.image}`}
-                            alt="Current Image"
-                            className="w-20 h-20 object-cover rounded"
-                        />
-                        <p className="text-gray-400 text-sm">Current image</p>
-                    </div>
-                )}
+                <label className="block mb-1">Images (Multiple file)</label>
                 <input
                     type="file"
-                    name="image"
+                    name="images"
                     onChange={handleFileChange}
                     accept="image/*"
+                    multiple
                     className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
                 />
+                {/* Tampilkan gambar yang sudah ada */}
+                {productDetail && productDetail.images && productDetail.images.map((image) => (
+                    <div key={image.id} className="mb-2 flex items-center">
+                        <img
+                            src={`/storage/${image.path}`}
+                            alt="Blog Image"
+                            className="w-20 h-20 object-cover rounded mr-4"
+                        />
+                        <button
+                            onClick={() => handleRemoveImage(image.id)}
+                            className="text-red-500 hover:text-red-700"
+                        >
+                            Hapus
+                        </button>
+                    </div>
+                ))}
             </div>
             <div className="flex space-x-4">
                 <button

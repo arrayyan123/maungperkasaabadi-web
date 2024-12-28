@@ -8,7 +8,8 @@ function BlogForm({ Blog, onClose, onUpdate }) {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
-        image: null,
+        images: [],
+        delete_images: [],
     });
 
     useEffect(() => {
@@ -16,13 +17,15 @@ function BlogForm({ Blog, onClose, onUpdate }) {
             setFormData({
                 title: Blog.title || '',
                 description: Blog.description || '',
-                image: null,
+                images: [],
+                delete_images: [],
             });
         } else {
             setFormData({
                 title: '',
                 description: '',
-                image: null,
+                images: [],
+                delete_images: [],
             });
         }
     }, [Blog]);
@@ -30,15 +33,18 @@ function BlogForm({ Blog, onClose, onUpdate }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-      };
+    };
 
     const handleDescriptionChange = (value) => {
         setFormData({ ...formData, description: value });
     };
 
     const handleFileChange = (e) => {
-        const { name } = e.target;
-        setFormData({ ...formData, [name]: e.target.files[0] });
+        const files = Array.from(e.target.files);
+        setFormData((prev) => ({
+            ...prev,
+            images: files,
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -50,14 +56,17 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         }
 
         const dataToSend = new FormData();
-
         dataToSend.append('title', formData.title);
         dataToSend.append('description', formData.description);
 
-        if (formData.image) {
-            dataToSend.append('image', formData.image);
-        } else {
-            dataToSend.append('old_image', Blog.image);
+        formData.images.forEach((image, index) => {
+            dataToSend.append(`images[${index}]`, image);
+        });
+
+        if (formData.delete_images.length > 0) {
+            formData.delete_images.forEach((id) => {
+                dataToSend.append('delete_images[]', id);
+            });
         }
 
         try {
@@ -75,13 +84,21 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                     },
                 });
 
-            alert('Blog saved successfully');
+            alert('Blog berhasil disimpan');
             onUpdate();
             onClose();
         } catch (error) {
             console.error('Error saving Blog:', error);
             alert('Failed to save Blog. Please check the required fields.');
         }
+    };
+
+
+    const handleRemoveImage = (imageId) => {
+        setFormData((prev) => ({
+            ...prev,
+            delete_images: [...prev.delete_images, imageId],
+        }));
     };
 
     return (
@@ -118,26 +135,33 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                 />
             </div>
 
-            {/* Image 1 */}
+            {/* Image */}
             <div className="mb-4">
-                <label className="block mb-1">Image</label>
-                {Blog && Blog.image && (
-                    <div className="mb-2">
-                        <img
-                            src={`/storage/${Blog.image}`}
-                            alt="Current Image"
-                            className="w-20 h-20 object-cover rounded"
-                        />
-                        <p className="text-gray-400 text-sm">Current image</p>
-                    </div>
-                )}
+                <label className="block mb-1">Images (Multiple file)</label>
                 <input
                     type="file"
-                    name="image"
+                    name="images"
                     onChange={handleFileChange}
                     accept="image/*"
+                    multiple
                     className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
                 />
+                {/* Tampilkan gambar yang sudah ada */}
+                {Blog && Blog.images && Blog.images.map((image) => (
+                    <div key={image.id} className="mb-2 flex items-center">
+                        <img
+                            src={`/storage/${image.path}`}
+                            alt="Blog Image"
+                            className="w-20 h-20 object-cover rounded mr-4"
+                        />
+                        <button
+                            onClick={() => handleRemoveImage(image.id)}
+                            className="text-red-500 hover:text-red-700"
+                        >
+                            Hapus
+                        </button>
+                    </div>
+                ))}
             </div>
 
             {/* Buttons */}

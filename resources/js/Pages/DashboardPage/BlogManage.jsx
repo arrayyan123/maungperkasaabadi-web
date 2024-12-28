@@ -196,13 +196,16 @@ function BlogManage() {
                                             <td className="py-3 px-4">
                                                 {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
                                             </td>
-                                            <td className="py-3 px-4 flex flex-col space-y-2">
-                                                <img
-                                                    src={`/storage/${item.image}`}
-                                                    alt={`Image ${item.image}`}
-                                                    width="50"
-                                                    className="border rounded"
-                                                />
+                                            <td className="py-3 px-4 flex flex-wrap">
+                                                {item.images.map((image) => (
+                                                    <img
+                                                        key={image.id}
+                                                        src={`/storage/${image.path}`}
+                                                        alt={`Image ${image.path}`}
+                                                        width="50"
+                                                        className="border rounded"
+                                                    />
+                                                ))}
                                             </td>
                                             <td className="py-3 px-4 items-center space-y-2">
                                                 <button

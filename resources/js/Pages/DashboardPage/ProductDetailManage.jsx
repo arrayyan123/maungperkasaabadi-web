@@ -106,13 +106,16 @@ function ProductDetailManage() {
                                             <td className="py-3 px-4">
                                                 {item.type_product}
                                             </td>
-                                            <td className="py-3 px-4 flex flex-col space-y-2">
-                                                <img
-                                                    src={`/storage/${item.image}`}
-                                                    alt={`Image ${item.image}`}
-                                                    width="50"
-                                                    className="border rounded"
-                                                />
+                                            <td className="py-3 px-4 flex flex-col">
+                                                {item.images.map((image) => (
+                                                    <img
+                                                        key={image.id}
+                                                        src={`/storage/${image.path}`}
+                                                        alt={`Image ${image.path}`}
+                                                        width="50"
+                                                        className="border rounded"
+                                                    />
+                                                ))}
                                             </td>
                                             <td className="py-3 px-4 items-center space-y-2">
                                                 <button
@@ -143,11 +146,10 @@ function ProductDetailManage() {
                                 <button
                                     key={index + 1}
                                     onClick={() => handlePageChange(index + 1)}
-                                    className={`mx-1 px-3 py-1 rounded ${
-                                        currentPage === index + 1
+                                    className={`mx-1 px-3 py-1 rounded ${currentPage === index + 1
                                             ? 'bg-blue-500 text-white'
                                             : 'bg-gray-700 text-gray-300'
-                                    }`}
+                                        }`}
                                 >
                                     {index + 1}
                                 </button>

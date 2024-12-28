@@ -13,6 +13,15 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
   const [filterType, setFilterType] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
+  const [modalImage, setModalImage] = useState(null);
+
+  const openModal = (imagePath) => {
+    setModalImage(imagePath);
+  };
+
+  const closeModal = () => {
+    setModalImage(null);
+  };
 
   const fetchProduct = async () => {
     try {
@@ -120,12 +129,13 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                     >
                       <div className="w-full h-full">
                         <span className="text-[13px] relative z-40 top-10 left-3 font-bold bg-opacity-55 text-white bg-gray-800 px-3 py-2 rounded-3xl leading-tight motion motion-preset-shrink">
-                          {item.type_product === 'nonitproduct' ? 'Non IT Product' : 'IT Product'}                        </span>
+                          {item.type_product === 'nonitproduct' ? 'Non IT Product' : 'IT Product'}                        
+                        </span>
                         <div className="">
                           <img
-                            alt={item.product_name}
+                            alt={item.title}
                             className="object-cover w-full h-52 dark:bg-gray-500"
-                            src={`/storage/${item.image}`}
+                            src={`/storage/${item.images?.[0]?.path}`}
                           />
                         </div>
                       </div>
@@ -172,20 +182,100 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                 Kembali ke Product
               </button>
               <h2 className="text-2xl font-bold mb-4">{selectedProduct.product_name}</h2>
-              <img
-                alt={selectedProduct.product_name}
-                className="object-cover w-full h-64 mb-4 dark:bg-gray-500"
-                src={`/storage/${selectedProduct.image}`}
-              />
-              <p className="text-gray-800">
-                <div
-                  className="prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{ __html: selectedProduct.product_description }}
-                />
-              </p>
-              <p className="mt-4 text-sm text-gray-600">
+              <p className="my-4 text-sm text-gray-600">
                 Dipublikasikan pada: {moment(selectedProduct.created_at).format('MMMM Do, YYYY, h:mm A')}
               </p>
+              <img
+                src={`/storage/${selectedProduct.images?.[0]?.path}`}
+                alt={selectedProduct.title}
+                className="object-cover object-center w-full h-full"
+              />
+              <div className="space-y-6 mt-4">
+                {(() => {
+                  const paragraphs = selectedProduct.product_description.split('\n\n');
+                  const images = selectedProduct.images || [];
+
+                  return Array.from({ length: Math.max(paragraphs.length, images.length) }).map((_, i) => (
+                    <React.Fragment key={i}>
+                      {/* Render Deskripsi */}
+                      {i < paragraphs.length && (
+                        <div
+                          className="prose prose-sm max-w-none"
+                          dangerouslySetInnerHTML={{ __html: paragraphs[i] }}
+                        />
+                      )}
+                    </React.Fragment>
+                  ));
+                })()}
+              </div>
+              <div className="bg-white dark:bg-gray-800  h-full py-6 sm:py-8 lg:py-12">
+                <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+                  <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
+                    <div className="flex items-center gap-12">
+                      <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl dark:text-white">Gallery</h2>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 xl:gap-8">
+                    {selectedProduct.images && selectedProduct.images.map((image, index) => {
+                      const isFirstInRow = (Math.floor(index / 2) % 2 === 0); // Menentukan pola selang-seling berdasarkan baris
+                      const isLeftImage = index % 2 === 0; // Menentukan gambar kiri (kecil) dan kanan (besar)
+                      return (
+                        <a
+                          key={index}
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            openModal(`/storage/${image.path}`);
+                          }}
+                          className={`group relative flex items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg ${
+                            isFirstInRow
+                            ? isLeftImage
+                              ? 'h-80'
+                              : 'md:col-span-2 col-span-1 h-80'
+                            : isLeftImage
+                            ? 'md:col-span-2 col-span-1 h-80'
+                            : 'h-80'
+                          }`}
+                        >
+                          <img
+                            src={`/storage/${image.path}`}
+                            loading="lazy"
+                            alt={`Gallery Image ${index + 1}`}
+                            className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                          />
+
+                          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
+
+                          <span className="relative ml-4 mb-3 inline-block text-sm text-white md:ml-5 md:text-lg">
+                            {image.title || 'foto'}
+                          </span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+                {modalImage && (
+                  <div
+                    className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+                    onClick={closeModal} 
+                  >
+                    <div className="relative">
+                      <img
+                        src={modalImage}
+                        alt="Preview"
+                        className="max-w-[90vw] motion-preset-blur-up mx-auto max-h-[90vh] object-contain bg-white"
+                      />
+                      <p className='text-white mx-3'>{selectedProduct.product_name}</p>
+                      <button
+                        className="absolute top-0 md:block hidden right-0 p-4 text-white text-3xl"
+                        onClick={closeModal} 
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

@@ -54,7 +54,11 @@ function HeroBlog({ isBlogSelected, onBlogSelect }) {
                                 onClick={() => onBlogSelect(item)}
                                 className="relative rounded-[22px] bg-gradient-to-r from-purple-600 to-blue-600 h-[660px] text-white overflow-hidden">
                                 <div class="absolute inset-0">
-                                    <img src={`/storage/${item.image}`} alt={item.title} class="object-cover object-center w-full h-full" />
+                                    <img
+                                        src={`/storage/${item.images?.[0]?.path}`}
+                                        alt={item.title}
+                                        className="object-cover object-center w-full h-full"
+                                    />
                                     <div class="absolute inset-0 bg-black opacity-50"></div>
                                 </div>
                                 <div class="relative z-10 p-10 flex lg:flex-row flex-col items-center justify-end mx-auto h-full ">

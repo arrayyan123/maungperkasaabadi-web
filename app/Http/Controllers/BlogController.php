@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\BlogImage;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
 
 class BlogController extends Controller
 {
@@ -14,8 +15,8 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blog = Blog::orderBy('created_at', 'desc')->get();
-        return response()->json($blog);
+        $blogs = Blog::with('images')->orderBy('created_at', 'desc')->get();
+        return response()->json($blogs);
     }
 
     /**
@@ -34,15 +35,22 @@ class BlogController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image',
+            'images.*' => 'nullable|image',
         ]);
-
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('blogs', 'public');
+    
+        $blog = Blog::create([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+        ]);
+    
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('blogs', 'public');
+                BlogImage::create(['blog_id' => $blog->id, 'path' => $path]);
+            }
         }
-        Blog::create($validated);
-
-        return redirect()->back()->with('success', 'Blog berhasil di tambah');
+    
+        return response()->json(['message' => 'Blog berhasil ditambahkan', 'blog' => $blog]);
     }
 
     /**
@@ -71,28 +79,39 @@ class BlogController extends Controller
     public function update(Request $request, $id)
     {
         $blog = Blog::findOrFail($id);
-
+    
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
-            'image' => 'nullable|image'
+            'images.*' => 'nullable|image',
+            'delete_images' => 'nullable|array', 
+            'delete_images.*' => 'integer',
         ]);
-        
-        if ($request->hasFile('image')) {
-            if ($blog->image) {
-                Storage::disk('public')->delete($blog->image);
+    
+        $blog->update([
+            'title' => $validated['title'] ?? $blog->title,
+            'description' => $validated['description'] ?? $blog->description,
+        ]);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('blogs', 'public');
+                BlogImage::create(['blog_id' => $blog->id, 'path' => $path]);
             }
-            $validated['image'] = $request->file('image')->store('blogs', 'public');
-        } else {
-            $validated['image'] = $blog->image;
         }
-
-        $updated = $blog->update($validated);
-
-        return response()->json([
-            'message' => $updated ? 'Blog berhasil di update' : 'gagal untuk mengupdate blog',
-            'Blogs' => $blog
-        ]);
+    
+        if ($request->filled('delete_images')) {
+            $deleteImages = $request->input('delete_images');
+            if (is_countable($deleteImages)) {
+                BlogImage::whereIn('id', $deleteImages)->each(function ($image) {
+                    Storage::disk('public')->delete($image->path);
+                    $image->delete();
+                });
+            }
+        }
+        
+    
+        return response()->json(['message' => 'Blog berhasil diupdate', 'blog' => $blog]);
     }
 
     /**
@@ -102,12 +121,12 @@ class BlogController extends Controller
     {
         $blog = Blog::findOrFail($id);
 
-        if ($blog->image) {
-            Storage::disk('public')->delete($blog->image);
+        foreach ($blog->images as $image) {
+            Storage::disk('public')->delete($image->path);
         }
 
         $blog->delete();
 
-        return response()->json(['message' => 'Blog berhasil di hapus']);
+        return response()->json(['message' => 'Blog dan semua gambar terkait berhasil dihapus']);
     }
 }

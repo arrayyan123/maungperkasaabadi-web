@@ -13,8 +13,12 @@ class Blog extends Model
     protected $fillable = [
         'title',
         'description',
-        'image',
         'created_at',
         'updated_at',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(BlogImage::class);
+    }
 }
