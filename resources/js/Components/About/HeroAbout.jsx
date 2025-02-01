@@ -19,7 +19,7 @@ function HeroAbout() {
 
     const fetchAboutUs = async () => {
         try {
-            const response = await fetch('/aboutus'); 
+            const response = await fetch('/api/aboutus'); 
             const data = await response.json();
             setAboutUsContent(data);
         } catch (error) {
@@ -33,8 +33,8 @@ function HeroAbout() {
 
     return (
         <>
-            <div className='flex w-full h-full lg:flex-row flex-col gap-3'>
-                <div class="relative rounded-[22px] md:w-auto bg-gradient-to-r from-purple-600 to-blue-600 h-screen text-white overflow-hidden">
+            <div className='flex w-full h-1/2 lg:flex-row flex-col gap-3'>
+                <div class="relative rounded-[22px] md:w-auto bg-gradient-to-r from-purple-600 to-blue-600 h-auto text-white overflow-hidden">
                     <div class="absolute inset-0">
                         <img src={`/storage/${aboutUsContent[2]?.image1 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full" />
                         <div class="absolute inset-0 bg-black opacity-50"></div>

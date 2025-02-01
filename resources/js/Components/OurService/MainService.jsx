@@ -5,7 +5,7 @@ function MainService() {
 
     const fetchService = async () => {
         try {
-            const response = await fetch('/services');
+            const response = await fetch('/api/services');
             const data = await response.json();
             setServices(data);
         } catch (error) {

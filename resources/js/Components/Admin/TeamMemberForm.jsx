@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-//{ Teams, onClose, onUpdate }
-
 function TeamMemberForm({ Teams, onClose, onUpdate }) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const [formData, setFormData] = useState({
@@ -62,7 +60,7 @@ function TeamMemberForm({ Teams, onClose, onUpdate }) {
     
         try {
             const response = Teams
-                ? await axios.post(`/teams/${Teams.id}`, dataToSend, {
+                ? await axios.post(`/api/teams/${Teams.id}`, dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,

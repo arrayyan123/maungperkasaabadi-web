@@ -12,7 +12,7 @@ function AboutUsManage() {
 
     const fetchTeams = async () => {
         try {
-            const response = await fetch('/teams');
+            const response = await fetch('/api/teams');
             const data = await response.json();
             setTeams(data);
         } catch (error) {
@@ -35,7 +35,7 @@ function AboutUsManage() {
         if (window.confirm('Are you sure you want to delete this Team Member?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                await fetch(`/aboutus/${memberId}`, {
+                await fetch(`/api/teams/${memberId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

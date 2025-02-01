@@ -10,6 +10,35 @@ use Illuminate\Support\Facades\Storage;
 
 class NewsletterController extends Controller
 {
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'title' => 'required|string|max:255',
+    //         'body' => 'required|string',
+    //         'image' => 'nullable|image'
+    //     ]);
+    //     if ($request->hasFile('image')) {
+    //         $imagePath = $request->file('image')->store('newsletters', 'public');
+    //         $validated['image'] = $imagePath;
+    //     }
+    //     $newsletter = Newsletter::create($validated);
+
+    //     $subscribers = Subscriber::all();
+    //     foreach ($subscribers as $subscriber) {
+    //         Mail::send('emails.newsletter', [
+    //             'title' => $newsletter->title,
+    //             'body' => $newsletter->body,
+    //             'image' => $newsletter->image,
+    //             'email' => $subscriber->email,
+    //         ], function ($message) use ($subscriber, $newsletter) {
+    //             $message->to($subscriber->email)
+    //                 ->subject($newsletter->title);
+    //         });
+    //     }
+
+    //     return response()->json(['message' => 'Newsletter sent successfully']);
+    // }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -17,22 +46,33 @@ class NewsletterController extends Controller
             'body' => 'required|string',
             'image' => 'nullable|image'
         ]);
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('newsletters', 'public');
             $validated['image'] = $imagePath;
         }
-        $newsletter = Newsletter::create($validated);
+        
 
+        $newsletter = Newsletter::create($validated);
+        
         $subscribers = Subscriber::all();
         foreach ($subscribers as $subscriber) {
             Mail::send('emails.newsletter', [
                 'title' => $newsletter->title,
                 'body' => $newsletter->body,
-                'image' => $newsletter->image,
+                'image' => $newsletter->image ? asset('storage/' . $newsletter->image) : null,
                 'email' => $subscriber->email,
             ], function ($message) use ($subscriber, $newsletter) {
                 $message->to($subscriber->email)
-                        ->subject($newsletter->title);
+                    ->subject($newsletter->title);
+
+                // Lampirkan gambar jika ada
+                if ($newsletter->image) {
+                    $imagePath = storage_path('app/public/' . $newsletter->image);
+                    $message->attach($imagePath, [
+                        'as' => basename($imagePath),
+                    ]);
+                }
             });
         }
 

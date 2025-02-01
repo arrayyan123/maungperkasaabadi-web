@@ -3,16 +3,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons';
 import moment from 'moment';
-import { Tabs, TabsHeader, TabsBody, Tab, TabPanel } from "@material-tailwind/react";
 
-
-function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onProductDeselect }) {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onProductDeselect, productId }) {
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedDetail, setSelectedDetail] = useState(null);
   const [modalImage, setModalImage] = useState(null);
 
   const openModal = (imagePath) => {
@@ -23,96 +18,53 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
     setModalImage(null);
   };
 
-  const fetchProduct = async () => {
-    try {
-      const response = await fetch('/product_details');
-      const data = await response.json();
-      setProducts(data);
-      setFilteredProducts(data);
-    } catch (error) {
-      console.error('Error fetching blogs:', error);
-    }
-  };
-
-  const handleFilterChange = (type) => {
-    setFilterType(type);
-    setCurrentPage(1);
-    let filtered;
-    if (type === 'all') {
-      filtered = products;
-    } else {
-      filtered = products.filter((product) => product.type_product === type);
-    }
-    const searched = filtered.filter((product) =>
-      product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredProducts(searched);
-  };
-
-  const handleSearchChange = (query) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-    let filtered;
-
-    if (filterType === 'all') {
-      filtered = products;
-    } else {
-      filtered = products.filter((product) => product.type_product === filterType);
-    }
-    const searched = filtered.filter((product) =>
-      product.product_name.toLowerCase().includes(query.toLowerCase())
-    );
-
-    setFilteredProducts(searched);
-  };
-
   useEffect(() => {
-    fetchProduct();
-  }, []);
+    if (productId) {
+      fetch(`/api/products/${productId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setProduct(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching product details:', error);
+          setLoading(false);
+        });
+    }
+  }, [productId]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handleCloseDetail = () => {
+    setSelectedDetail(null);
   };
+
+  if (loading) {
+    return <p>Loading product details...</p>;
+  }
+
+  if (!product) {
+    return <p>No product selected.</p>;
+  }
 
   return (
-    <div>
-      <section className="py-6 sm:py-12 dark:bg-gray-100 dark:text-gray-800">
+    <div className="p-4 min-h-80">
+      {/* <section className="py-6 sm:py-12 dark:bg-gray-100 dark:text-gray-800">
         <div className="container lg:p-6 p-2 mx-auto space-y-8">
           <div className="space-y-2 text-center">
             <h2 className="text-3xl font-bold">Product</h2>
           </div>
 
-          <div className="flex flex-col gap-5 items-center justify-center mb-4 w-full">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="Search by product name..."
-              className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
-            />
+          {!isProductSelected && (
+            <div className="flex flex-col gap-5 items-center justify-center mb-4 w-full">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                placeholder="Search by product name..."
+                className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+              />
+            </div>
+          )}
 
-            <Tabs value={filterType} className="w-full ">
-              <TabsHeader>
-                <Tab value="all" onClick={() => handleFilterChange('all')}>
-                  All Products
-                </Tab>
-                <Tab value="itproduct" onClick={() => handleFilterChange('itproduct')}>
-                  IT Products
-                </Tab>
-                <Tab value="nonitproduct" onClick={() => handleFilterChange('nonitproduct')}>
-                  Non-IT Products
-                </Tab>
-              </TabsHeader>
-            </Tabs>
-          </div>
-
-          {/* Daftar Blog */}
           {!isProductSelected && (
             <div>
               <div className="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4">
@@ -129,7 +81,7 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                     >
                       <div className="w-full h-full">
                         <span className="text-[13px] relative z-40 top-10 left-3 font-bold bg-opacity-55 text-white bg-gray-800 px-3 py-2 rounded-3xl leading-tight motion motion-preset-shrink">
-                          {item.type_product === 'nonitproduct' ? 'Non IT Product' : 'IT Product'}                        
+                          {item.type_product}
                         </span>
                         <div className="">
                           <img
@@ -172,7 +124,6 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
             </div>
           )}
 
-          {/* Tampilan Blog yang Dipilih */}
           {isProductSelected && selectedProduct && (
             <div className="lg:p-6 p-2 bg-white shadow-md dark:bg-gray-50">
               <button
@@ -197,7 +148,6 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
 
                   return Array.from({ length: Math.max(paragraphs.length, images.length) }).map((_, i) => (
                     <React.Fragment key={i}>
-                      {/* Render Deskripsi */}
                       {i < paragraphs.length && (
                         <div
                           className="prose prose-sm max-w-none"
@@ -217,8 +167,8 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 xl:gap-8">
                     {selectedProduct.images && selectedProduct.images.map((image, index) => {
-                      const isFirstInRow = (Math.floor(index / 2) % 2 === 0); // Menentukan pola selang-seling berdasarkan baris
-                      const isLeftImage = index % 2 === 0; // Menentukan gambar kiri (kecil) dan kanan (besar)
+                      const isFirstInRow = (Math.floor(index / 2) % 2 === 0);
+                      const isLeftImage = index % 2 === 0;
                       return (
                         <a
                           key={index}
@@ -227,15 +177,14 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                             e.preventDefault();
                             openModal(`/storage/${image.path}`);
                           }}
-                          className={`group relative flex items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg ${
-                            isFirstInRow
+                          className={`group relative flex items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg ${isFirstInRow
                             ? isLeftImage
                               ? 'h-80'
                               : 'md:col-span-2 col-span-1 h-80'
                             : isLeftImage
-                            ? 'md:col-span-2 col-span-1 h-80'
-                            : 'h-80'
-                          }`}
+                              ? 'md:col-span-2 col-span-1 h-80'
+                              : 'h-80'
+                            }`}
                         >
                           <img
                             src={`/storage/${image.path}`}
@@ -257,7 +206,7 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                 {modalImage && (
                   <div
                     className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-                    onClick={closeModal} 
+                    onClick={closeModal}
                   >
                     <div className="relative">
                       <img
@@ -268,7 +217,7 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
                       <p className='text-white mx-3'>{selectedProduct.product_name}</p>
                       <button
                         className="absolute top-0 md:block hidden right-0 p-4 text-white text-3xl"
-                        onClick={closeModal} 
+                        onClick={closeModal}
                       >
                         &times;
                       </button>
@@ -279,7 +228,116 @@ function MainProduct({ isProductSelected, selectedProduct, onProductSelect, onPr
             </div>
           )}
         </div>
-      </section>
+      </section> */}
+      {/* Header utama produk */}
+      {!selectedDetail && (
+        <div>
+          <h1 className="text-2xl font-bold">{product.type_product}</h1>
+          <div
+            className="prose prose-sm mt-2 text-black max-w-none"
+            dangerouslySetInnerHTML={{ __html: product.description_product }}
+          />
+        </div>
+      )}
+
+      {/* Grid untuk produk detail */}
+      {selectedDetail ? ( // Menampilkan detail jika ada yang dipilih
+        <div className="mt-8 p-4 border rounded-lg">
+          <button
+            onClick={handleCloseDetail}
+            className="mb-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            Close
+          </button>
+          <h2 className="text-xl font-bold">{selectedDetail.product_detail_name}</h2>
+          <div
+            className="prose prose-sm text-black max-w-none"
+            dangerouslySetInnerHTML={{ __html: selectedDetail.product_detail_description }}
+          />
+          <div className="bg-white dark:bg-gray-800  h-full py-6 sm:py-8 lg:py-12">
+            <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
+              <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
+                <div className="flex items-center gap-12">
+                  <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl dark:text-white">Gallery</h2>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 xl:gap-8">
+                {selectedDetail.images && selectedDetail.images.map((image, index) => {
+                  const isFirstInRow = (Math.floor(index / 2) % 2 === 0); // Menentukan pola selang-seling berdasarkan baris
+                  const isLeftImage = index % 2 === 0; // Menentukan gambar kiri (kecil) dan kanan (besar)
+                  return (
+                    <a
+                      key={index}
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        openModal(`/storage/${image.path}`);
+                      }}
+                      className={`group relative flex items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg ${isFirstInRow
+                        ? isLeftImage
+                          ? 'h-80'
+                          : 'md:col-span-2 col-span-1 h-80'
+                        : isLeftImage
+                          ? 'md:col-span-2 col-span-1 h-80'
+                          : 'h-80'
+                        }`}
+                    >
+                      <img
+                        src={`/storage/${image.path}`}
+                        loading="lazy"
+                        alt={`Gallery Image ${index + 1}`}
+                        className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                      />
+
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+            {modalImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+                onClick={closeModal}
+              >
+                <div className="relative">
+                  <img
+                    src={modalImage}
+                    alt="Preview"
+                    className="max-w-[90vw] motion-preset-blur-up mx-auto max-h-[90vh] object-contain bg-white"
+                  />
+                  <p className='text-white mx-3'>{selectedDetail.product_detail_name}</p>
+                  <button
+                    className="absolute top-0 md:block hidden right-0 p-4 text-white text-3xl"
+                    onClick={closeModal}
+                  >
+                    &times;
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+            {product.details.map((detail) => (
+              <div
+                key={detail.id}
+                className="border rounded-lg p-4 cursor-pointer hover:shadow-md transition"
+                onClick={() => setSelectedDetail(detail)}
+              >
+                <img
+                  src={detail.images[0]?.path ? `/storage/${detail.images[0].path}` : '/default-thumbnail.png'}
+                  alt={detail.product_detail_name}
+                  className="w-full h-32 object-cover rounded-md"
+                />
+                <h3 className="mt-2 text-lg font-bold">{detail.product_detail_name}</h3>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1,83 +1,101 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css';
 
 function BlogForm({ Blog, onClose, onUpdate }) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        images: [],
-        delete_images: [],
-    });
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [images, setImages] = useState([]);
+    const [previewImages, setPreviewImages] = useState([]);
+    const [deleteImages, setDeleteImages] = useState([]);
+
+    const { quill, quillRef } = useQuill();
 
     useEffect(() => {
         if (Blog) {
-            setFormData({
-                title: Blog.title || '',
-                description: Blog.description || '',
-                images: [],
-                delete_images: [],
-            });
+            setTitle(Blog.title || '');
+            setDescription(Blog.description || '');
+            setImages([]);
+            setDeleteImages([]);
+            setPreviewImages([]);
+
+            if (quill) {
+                quill.clipboard.dangerouslyPasteHTML(Blog.description || '');
+            }
         } else {
-            setFormData({
-                title: '',
-                description: '',
-                images: [],
-                delete_images: [],
-            });
+            setTitle('');
+            setDescription('');
+            setImages([]);
+            setDeleteImages([]);
+            setPreviewImages([]);
+
+            if (quill) {
+                quill.clipboard.dangerouslyPasteHTML('');
+            }
         }
-    }, [Blog]);
+    }, [Blog, quill]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleDescriptionChange = (value) => {
-        setFormData({ ...formData, description: value });
-    };
+    const handleClearForm = () => {
+        setTitle('');
+        if (quill) {
+            quill.clipboard.dangerouslyPasteHTML('');
+        }
+        setImages([]);
+        setDeleteImages([]);
+        setPreviewImages([]);
+    }
 
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
-        setFormData((prev) => ({
-            ...prev,
-            images: files,
-        }));
+        setImages(files);
+        const previewURLs = files.map((file) => URL.createObjectURL(file));
+        setPreviewImages(previewURLs);
+    };
+
+    const handleRemoveImage = (imageId) => {
+        setDeleteImages((prev) => [...prev, imageId]);
+    };
+
+    const handleRemovePreviewImage = (index) => {
+        setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+        setImages((prev) => prev.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.title || !formData.description) {
+        const quillDescription = quill.root.innerHTML;
+
+        if (!title || !quillDescription) {
             alert('Title and description are required.');
             return;
         }
 
         const dataToSend = new FormData();
-        dataToSend.append('title', formData.title);
-        dataToSend.append('description', formData.description);
+        dataToSend.append('title', title);
+        dataToSend.append('description', quillDescription);
 
-        formData.images.forEach((image, index) => {
+        images.forEach((image, index) => {
             dataToSend.append(`images[${index}]`, image);
         });
 
-        if (formData.delete_images.length > 0) {
-            formData.delete_images.forEach((id) => {
+        if (deleteImages.length > 0) {
+            deleteImages.forEach((id) => {
                 dataToSend.append('delete_images[]', id);
             });
         }
 
         try {
             const response = Blog
-                ? await axios.post(`/blogs/${Blog.id}`, dataToSend, {
+                ? await axios.post(`/api/blogs/${Blog.id}`, dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 })
-                : await axios.post('/blogs', dataToSend, {
+                : await axios.post('/api/blogs', dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
@@ -93,18 +111,10 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         }
     };
 
-
-    const handleRemoveImage = (imageId) => {
-        setFormData((prev) => ({
-            ...prev,
-            delete_images: [...prev.delete_images, imageId],
-        }));
-    };
-
     return (
         <form
             onSubmit={handleSubmit}
-            className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
+            className="p-6 bg-white text-black rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
                 {Blog ? 'Edit Blog' : 'Add New Blog'}
@@ -115,11 +125,10 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                 <label className="block mb-1">Title</label>
                 <input
                     type="text"
-                    name='title'
-                    value={formData.title}
-                    onChange={handleChange}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full text-black"
                     placeholder="Enter the title"
                 />
             </div>
@@ -127,12 +136,7 @@ function BlogForm({ Blog, onClose, onUpdate }) {
             {/* Description */}
             <div className="mb-4">
                 <label className="block mb-1">Description</label>
-                <ReactQuill
-                    theme="snow"
-                    value={formData.description}
-                    onChange={handleDescriptionChange}
-                    className="mt-2"
-                />
+                <div ref={quillRef} className="mt-2 bg-white text-black rounded" style={{ minHeight: '150px' }} />
             </div>
 
             {/* Image */}
@@ -140,28 +144,54 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                 <label className="block mb-1">Images (Multiple file)</label>
                 <input
                     type="file"
-                    name="images"
                     onChange={handleFileChange}
                     accept="image/*"
                     multiple
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full text-black"
                 />
-                {/* Tampilkan gambar yang sudah ada */}
-                {Blog && Blog.images && Blog.images.map((image) => (
-                    <div key={image.id} className="mb-2 flex items-center">
-                        <img
-                            src={`/storage/${image.path}`}
-                            alt="Blog Image"
-                            className="w-20 h-20 object-cover rounded mr-4"
-                        />
-                        <button
-                            onClick={() => handleRemoveImage(image.id)}
-                            className="text-red-500 hover:text-red-700"
-                        >
-                            Hapus
-                        </button>
+                {/* Display existing images */}
+                <div className="flex flex-wrap mt-4 gap-4">
+                    Current Images
+                    {Blog && Blog.images && Blog.images.map((image) => (
+
+                        <div key={image.id} className="relative">
+                            <img
+                                src={`/storage/${image.path}`}
+                                alt="Blog Image"
+                                className="w-20 h-20 object-cover rounded mr-4"
+                            />
+                            <button
+                                onClick={() => handleRemoveImage(image.id)}
+                                className="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs"
+                            >
+                                x
+                            </button>
+                        </div>
+
+                    ))}
+                </div>
+                {/* Preview selected images */}
+                {previewImages.length > 0 && (
+                    <div className="flex flex-wrap mt-4 gap-4">
+                        New Images
+                        {previewImages.map((src, index) => (
+                            <div key={index} className="relative">
+                                <img
+                                    src={src}
+                                    alt="Preview"
+                                    className="w-20 h-20 object-cover rounded shadow"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemovePreviewImage(index)}
+                                    className="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs"
+                                >
+                                    x
+                                </button>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                )}
             </div>
 
             {/* Buttons */}
@@ -172,13 +202,24 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                 >
                     {Blog ? 'Update' : 'Submit'}
                 </button>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                >
-                    Cancel
-                </button>
+                {!Blog && (
+                    <button
+                        type="button"
+                        onClick={handleClearForm}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                    >
+                        Clear form
+                    </button>
+                )}
+                {Blog && (
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
         </form>
     )

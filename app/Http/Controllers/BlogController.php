@@ -110,7 +110,6 @@ class BlogController extends Controller
             }
         }
         
-    
         return response()->json(['message' => 'Blog berhasil diupdate', 'blog' => $blog]);
     }
 

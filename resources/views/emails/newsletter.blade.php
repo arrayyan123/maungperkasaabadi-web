@@ -73,7 +73,9 @@
 
             <!-- Display image if available -->
             @if (!empty($image))
-                <img src="{{ asset('storage/' . $image) }}" alt="Newsletter Image">
+                <img src="{{ $image }}" alt="Newsletter Image" style="max-width: 100%; height: auto;">
+            @else
+                <p>No image available.</p> <!-- Tambahkan ini untuk menghindari undefined -->
             @endif
 
             <!-- Email content -->

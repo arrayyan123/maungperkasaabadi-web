@@ -56,13 +56,13 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
     
         try {
             const response = OurService
-                ? await axios.post(`/services/${OurService.id}`, dataToSend, {
+                ? await axios.post(`/api/services/${OurService.id}`, dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 })
-                : await axios.post('/services', dataToSend, {
+                : await axios.post('/api/services', dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,

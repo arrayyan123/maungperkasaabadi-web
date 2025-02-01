@@ -6,36 +6,56 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import moment from 'moment';
 import IonIcon from '@reacticons/ionicons';
+import axios from 'axios';
 
 function ContactManage({ contacts }) {
     const [reply, setReply] = useState('');
     const [selectedContact, setSelectedContact] = useState(null);
     const [selectedContacts, setSelectedContacts] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [filters, setFilters] = useState({ name: '', email: '', created_at: '' }); 
+    const [filters, setFilters] = useState({ name: '', email: '', created_at: '' });
     const { post, processing } = useForm();
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const [alertMessage, setAlertMessage] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleReply = (e, id) => {
+    const handleReply = async (e, id) => {
+        setIsLoading(true); // Mulai loading
+        setAlertMessage(null);
         e.preventDefault();
-        fetch(`/admin/contacts/${id}/reply`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({ reply }),
-        })
-            .then((response) => response.json())
-            .then((data) => console.log(data))
-            .catch((error) => console.error('Error:', error));
+        try {
+            const response = await fetch(`/api/admin/contacts/${id}/reply`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({ reply }),
+            });
+
+            const data = await response.text(); // Ambil sebagai teks
+            console.log(data);
+
+            if (response.ok) {
+                setAlertMessage('Reply sent successfully!');
+                setReply('');
+            } else {
+                const errorData = await response.json();
+                setAlertMessage('Failed to send reply. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setAlertMessage('An error occurred while sending the reply.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const deleteSelectedMessages = async () => {
         try {
             await Promise.all(
                 selectedContacts.map((id) =>
-                    fetch(`/admin/contacts/${id}`, {
+                    fetch(`/api/admin/contacts/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -122,7 +142,7 @@ function ContactManage({ contacts }) {
             <AuthenticatedLayout
                 header={
                     <h2 className="text-2xl font-bold text-white">
-                        Dashboard - Contact Management
+                        Contact Management
                     </h2>
                 }
             >
@@ -131,7 +151,7 @@ function ContactManage({ contacts }) {
                     <div className="flex">
                         {/* Contact List */}
                         <div className="p-0  w-full text-black min-h-screen">
-                            <div className='px-6 pt-8'>
+                            <div className='px-6 md:py-8 py-4 sticky top-0 bg-white'>
                                 <h1 className="text-2xl font-bold mb-5">Contacts</h1>
                                 <div className="flex flex-col md:flex-row gap-4 mb-5">
                                     <input
@@ -178,7 +198,7 @@ function ContactManage({ contacts }) {
                                 </div>
                             </div>
 
-                            <div className="mt-8 flex lg:flex-row flex-col">
+                            <div className="flex lg:flex-row flex-col">
                                 {/* Contact List */}
                                 <section className="w-full lg:w-1/3 border-r bg-white overflow-y-auto lg:max-h-[76vh] md:max-h-[77vh] sm:max-h-[28vh] max-h-[26vh]">
                                     <div>
@@ -220,30 +240,40 @@ function ContactManage({ contacts }) {
                                 </section>
 
                                 {/* Contact Details */}
-                                <section className="flex-1 bg-gray-50 flex-shrink-0">
+                                <section className="flex-1 bg-gray-50 overflow-y-auto lg:max-h-[76vh] md:max-h-[77vh] sm:max-h-[28vh] max-h-[26vh] flex-shrink-0">
                                     {renderContactDetails()}
+                                    {selectedContact && (
+                                        <div className="mt-8 p-4">
+                                            {alertMessage && (
+                                                <div
+                                                    className={`mt-4 p-2 rounded ${alertMessage.includes('success')
+                                                            ? 'bg-green-100 text-green-600'
+                                                            : 'bg-red-100 text-red-600'
+                                                        }`}
+                                                >
+                                                    {alertMessage}
+                                                </div>
+                                            )}
+                                            <h2 className="text-lg font-semibold my-4">
+                                                Reply to {selectedContact.name} ({selectedContact.email})
+                                            </h2>
+                                            <ReactQuill
+                                                value={reply}
+                                                onChange={setReply}
+                                                className="border border-gray-300 rounded-md"
+                                                theme="snow"
+                                            />
+                                            <button
+                                                onClick={(e) => handleReply(e, selectedContact.id)}
+                                                disabled={processing}
+                                                className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
+                                            >
+                                                {isLoading ? 'Sending...' : 'Send Reply'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </section>
                             </div>
-                            {selectedContact && (
-                                <div className="mt-8 p-4">
-                                    <h2 className="text-xl font-semibold mb-4">
-                                        Reply to {selectedContact.name} ({selectedContact.email})
-                                    </h2>
-                                    <ReactQuill
-                                        value={reply}
-                                        onChange={setReply}
-                                        className="border border-gray-300 rounded-md"
-                                        theme="snow"
-                                    />
-                                    <button
-                                        onClick={(e) => handleReply(e, selectedContact.id)}
-                                        disabled={processing}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2"
-                                    >
-                                        Send Reply
-                                    </button>
-                                </div>
-                            )}
                         </div>
 
                         {/* Delete Confirmation Modal */}

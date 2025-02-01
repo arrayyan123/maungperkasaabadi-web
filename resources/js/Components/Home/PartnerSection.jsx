@@ -10,7 +10,7 @@ function PartnerSection() {
 
     const fetchSlides = async () => {
         try {
-            const response = await fetch('/partnership');
+            const response = await fetch('/api/partnership');
             const data = await response.json();
 
             const slidesData = data.map((product) => ({

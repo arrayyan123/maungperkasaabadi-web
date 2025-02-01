@@ -78,13 +78,13 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
     
         try {
             const response = aboutUs
-                ? await axios.post(`/aboutus/${aboutUs.id}`, dataToSend, {
+                ? await axios.post(`/api/aboutus/${aboutUs.id}`, dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 })
-                : await axios.post('/aboutus', dataToSend, {
+                : await axios.post('/api/aboutus', dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,

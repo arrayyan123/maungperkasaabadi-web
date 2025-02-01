@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\ProductDetail;
 use App\Models\ProductDetailImage;
 use Illuminate\Http\Request;
@@ -10,16 +11,25 @@ use Illuminate\Support\Facades\Storage;
 class ProductDetailController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the product details.
      */
     public function index()
     {
-        $productDetail = ProductDetail::with('images')->orderBy('created_at', 'desc')->get();
-        return response()->json($productDetail);
+        $productDetails = ProductDetail::with('images', 'product')->get();
+        return response()->json($productDetails);
     }
 
+    // public function show(ProductDetail $productDetail)
+    // {
+
+    //     if (!$productDetail) {
+    //         return redirect()->json(['message' => 'Product Detail tidak ditemukan'], 404);
+    //     }
+    //     return response()->json($productDetail);
+    // }
+
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new product detail.
      */
     public function create()
     {
@@ -27,27 +37,27 @@ class ProductDetailController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created product detail in storage.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'product_name' => 'required|string|max:255',
-            'product_description' => 'required|string',
-            'type_product' => 'required|in:nonitproduct,itproduct',
+            'product_id' => 'required|uuid|exists:products,id',
+            'product_detail_name' => 'required|string|max:255',
+            'product_detail_description' => 'required|string',
+            'product_detail_type' => 'required|string|max:255',
             'images.*' => 'nullable|image',
         ]);
 
-        $productDetail = ProductDetail::create([
-            'product_name' => $validated['product_name'],
-            'product_description' => $validated['product_description'],
-            'type_product' => $validated['type_product'],
-        ]);
+        $productDetail = ProductDetail::create($validated);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('product_details', 'public');
-                ProductDetailImage::create(['product_detail_id' => $productDetail->id, 'path' => $path]);
+                ProductDetailImage::create([
+                    'product_detail_id' => $productDetail->id,
+                    'path' => $path,
+                ]);
             }
         }
 
@@ -55,81 +65,69 @@ class ProductDetailController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for editing the specified product detail.
      */
-    public function show($id)
-    {
-        $productDetail = ProductDetail::findOrFail($id);
-
-        if (!$productDetail) {
-            return redirect()->json(['message' => 'Product Detail tidak ditemukan'], 404);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(ProductDetail $productDetail)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified product detail in storage.
      */
     public function update(Request $request, $id)
     {
         $productDetail = ProductDetail::findOrFail($id);
 
         $validated = $request->validate([
-            'product_name' => 'sometimes|required|string|max:255',
-            'product_description' => 'nullable|string',
-            'type_product' => 'sometimes|required|in:nonitproduct,itproduct',
+            'product_id' => 'required|uuid|exists:products,id',
+            'product_detail_name' => 'sometimes|string|max:255',
+            'product_detail_description' => 'sometimes|string',
+            'product_detail_type' => 'sometimes|string|max:255',
             'images.*' => 'nullable|image',
-            'delete_images' => 'nullable|array', 
-            'delete_images.*' => 'integer',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'uuid|exists:product_detail_images,id',
         ]);
 
         $productDetail->update([
-            'product_name' => $validated['product_name'] ?? $productDetail->product_name,
-            'product_description' => $validated['product_description'] ?? $productDetail->product_description,
-            'type_product' => $validated['type_product'] ?? $productDetail->type_product,
+            'product_detail_name' => $validated['product_detail_name'],
+            'product_detail_description' => $validated['product_detail_description'],
+            'product_detail_type' => $validated['product_detail_type'],
         ]);
 
+        // Delete images specified in the request
+        if ($request->filled('delete_images')) {
+            $deleteImages = $request->input('delete_images');
+            $imagesToDelete = ProductDetailImage::whereIn('id', $deleteImages)->get();
+
+            foreach ($imagesToDelete as $image) {
+                Storage::disk('public')->delete($image->path);
+                $image->delete();
+            }
+        }
+
+        // Store new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('product_details', 'public');
                 ProductDetailImage::create(['product_detail_id' => $productDetail->id, 'path' => $path]);
             }
         }
-    
-        if ($request->filled('delete_images')) {
-            $deleteImages = $request->input('delete_images');
-            if (is_countable($deleteImages)) {
-                ProductDetailImage::whereIn('id', $deleteImages)->each(function ($image) {
-                    Storage::disk('public')->delete($image->path);
-                    $image->delete();
-                });
-            }
-        }
-        
-        return response()->json(['message' => 'Product Detail berhasil diupdate', 'productDetail' => $productDetail]);
 
+        return redirect()->back()->with('success', 'Product detail updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified product detail from storage.
      */
-    public function destroy($id)
+    public function destroy(ProductDetail $productDetail)
     {
-        $productDetail = ProductDetail::findOrFail($id);
-
         foreach ($productDetail->images as $image) {
-            Storage::disk('public')->delete($image->path); 
+            Storage::disk('public')->delete($image->path);
         }
 
         $productDetail->delete();
 
-        return response()->json(['message' => 'Product Detail deleted successfully']);
+        return redirect()->back()->with('success', 'Product detail deleted successfully.');
     }
 }

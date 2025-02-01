@@ -18,7 +18,7 @@ function HeroBlog({ isBlogSelected, onBlogSelect }) {
 
     const fetchBlog = async () => {
         try {
-            const response = await fetch('/blogs');
+            const response = await fetch('/api/blogs');
             const data = await response.json();
             setBlog(data);
         } catch (error) {

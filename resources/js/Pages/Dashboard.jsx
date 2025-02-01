@@ -9,7 +9,7 @@ export default function Dashboard({ auth }) {
 
     const fetchMessage = async () => {
         try {
-            const response = await fetch('/admin/contacts', {
+            const response = await fetch('/api/admin/contacts', {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
                     'Accept': 'application/json',

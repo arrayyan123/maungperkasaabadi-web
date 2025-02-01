@@ -12,7 +12,7 @@ function OurServiceManage() {
 
     const fetchService = async () => {
         try {
-            const response = await fetch('/services');
+            const response = await fetch('/api/services');
             const data = await response.json();
             setServices(data);
         } catch (error) {
@@ -24,7 +24,7 @@ function OurServiceManage() {
         if (window.confirm('Are you sure you want to delete this Service?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                await fetch(`/services/${serviceId}`, {
+                await fetch(`/api/services/${serviceId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

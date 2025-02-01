@@ -56,13 +56,13 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
     
         try {
             const response = Partnership
-                ? await axios.post(`/partnership/${Partnership.id}`, dataToSend, {
+                ? await axios.post(`/api/partnership/${Partnership.id}`, dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 })
-                : await axios.post('/partnership', dataToSend, {
+                : await axios.post('/api/partnership', dataToSend, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'X-CSRF-TOKEN': csrfToken,

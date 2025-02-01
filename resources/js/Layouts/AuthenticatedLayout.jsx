@@ -3,11 +3,12 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import { faCube } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, usePage } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons';
 import { useState, useEffect } from 'react';
 import { Fade } from 'react-awesome-reveal';
-
 
 
 const pngImages = import.meta.glob("/public/assets/Images/*.png", { eager: true });
@@ -99,7 +100,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <li>
                             <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
-                                    <IonIcon className='text-[20px]' name="build"></IonIcon>
+                                    <IonIcon className='text-[20px]' name="speedometer"></IonIcon>
                                     <span
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}
@@ -112,12 +113,12 @@ export default function AuthenticatedLayout({ header, children }) {
                         <li>
                             <NavLink href={route('homemanage.dashboard')} active={route().current('homemanage.dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
-                                    <IonIcon className='text-[20px]' name="home"></IonIcon>
+                                    <FontAwesomeIcon className='text-[20px]' icon={faCube}></FontAwesomeIcon>
                                     <span
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}
                                     >
-                                        Home Management
+                                        Content Management
                                     </span>
                                 </div>
                             </NavLink>
@@ -130,7 +131,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}
                                     >
-                                        About Management
+                                        Team Management
                                     </span>
                                 </div>
                             </NavLink>
@@ -156,7 +157,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}
                                     >
-                                        Product Detail Management
+                                        Product Management
                                     </span>
                                 </div>
                             </NavLink>

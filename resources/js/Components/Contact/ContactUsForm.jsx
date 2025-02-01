@@ -24,7 +24,7 @@ const ContactUsForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post('/contact-us', {
+        post('/api/contact-us', {
             onSuccess: () => {
                 reset();
                 setShowModal(true);

@@ -10,25 +10,34 @@ import 'swiper/css/pagination';
 
 import { EffectFade, Navigation, Pagination, Autoplay } from 'swiper/modules';
 
-function HeroProduct({ isProductSelected, onProductSelect }) {
+function HeroProduct({ isProductSelected, onProductSelect, typeProduct }) {
     if (isProductSelected) return null;
 
-    const [product, setProduct] = useState([]);
+    const [products, setProducts] = useState([]);
     const [visibleCount, setVisibleCount] = useState(1);
 
-    const fetchProduct = async () => {
-        try {
-            const response = await fetch('/product_details');
-            const data = await response.json();
-            setProduct(data);
-        } catch (error) {
-            console.error('Error fetching blogs:', error);
-        }
-    };
-
     useEffect(() => {
-        fetchProduct();
-    }, []);
+        const fetchProducts = async () => {
+          if (!typeProduct) {
+            console.warn("typeProduct is undefined. Skipping fetch.");
+            return;
+          }
+    
+          try {
+            const response = await fetch(`/product_details?typeProduct=${typeProduct}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            const filteredProducts = data.filter((product) => product.type_product === typeProduct);
+            setProducts(filteredProducts);
+          } catch (error) {
+            console.error("Error fetching products:", error);
+          }
+        };
+    
+        fetchProducts();
+      }, [typeProduct]);
 
     return (
         <>
@@ -48,7 +57,7 @@ function HeroProduct({ isProductSelected, onProductSelect }) {
                     modules={[EffectFade, Navigation, Pagination, Autoplay]}
                     className="mySwiper"
                 >
-                    {product.map((item) => (
+                    {products.map((item) => (
                         <SwiperSlide key={item.id}>
                             <div
                                 onClick={() => onProductSelect(item)}
@@ -58,7 +67,8 @@ function HeroProduct({ isProductSelected, onProductSelect }) {
                                         src={`/storage/${item.images?.[0]?.path}`}
                                         alt={item.title}
                                         className="object-cover object-center w-full h-full"
-                                    />                                    <div class="absolute inset-0 bg-black opacity-50"></div>
+                                    />                                    
+                                <div class="absolute inset-0 bg-black opacity-50"></div>
                                 </div>
                                 <div class="relative z-10 p-10 flex lg:flex-row flex-col items-center justify-end mx-auto h-full ">
                                     <div className="flex flex-col lg:w-1/2 h-full w-full justify-end">

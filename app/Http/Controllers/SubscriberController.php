@@ -28,6 +28,22 @@ class SubscriberController extends Controller
         return response()->json($subscriber);
     }
 
+    public function unsubscribe(Request $request)
+    {
+        $email = $request->query('email');
+
+        // Temukan subscriber berdasarkan email
+        $subscriber = Subscriber::where('email', $email)->first();
+
+        if ($subscriber) {
+            // Hapus subscriber
+            $subscriber->delete();
+            return response()->json(['message' => 'You have been unsubscribed successfully.']);
+        }
+
+        return response()->json(['message' => 'Subscriber not found.'], 404);
+    }
+
     public function destroy($id)
     {
         $subscriber = Subscriber::findOrFail($id);

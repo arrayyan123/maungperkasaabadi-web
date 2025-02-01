@@ -22,7 +22,9 @@ class PageController extends Controller
     public function ourService(){
         return Inertia::render('Posts/OurService');
     }
-    public function productDetails(){
-        return Inertia::render('Posts/ProductDetails');
+    public function productDetails(Request $request) {
+        return Inertia::render('Posts/ProductDetails', [
+            'product_id' => $request->query('product_id'),
+        ]);
     }
 }

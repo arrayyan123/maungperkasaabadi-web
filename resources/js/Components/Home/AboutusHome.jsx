@@ -16,7 +16,7 @@ function AboutusHome() {
 
     const fetchAboutUs = async () => {
         try {
-            const response = await fetch('/aboutus'); 
+            const response = await fetch('/api/aboutus'); 
             const data = await response.json();
             setAboutUsContent(data);
         } catch (error) {

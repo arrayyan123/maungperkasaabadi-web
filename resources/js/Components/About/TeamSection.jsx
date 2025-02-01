@@ -25,10 +25,9 @@ function TeamSection() {
     const [slides, setSlides] = useState([]);
     const [teams, setTeams] = useState([]);
 
-
     const fetchTeams = async () => {
         try {
-            const response = await fetch('/teams');
+            const response = await fetch('/api/teams');
             const data = await response.json();
             setSlides(data);
         } catch (error) {
@@ -99,6 +98,7 @@ function TeamSection() {
                                     src={`/storage/${slide.image || 'Loading...'}`}
                                     alt={slide.title}
                                 />
+
                                 {/* Name and Position */}
                                 <div className="absolute inset-0 flex flex-col items-start justify-end hover:motion-preset-blur-up px-4 py-6 group-hover:hidden transition-transform duration-300 group-hover:top-4 group-hover:left-4 group-hover:items-start group-hover:justify-start">
                                     <h2 className="text-white text-2xl font-bold">{slide.name}</h2>
