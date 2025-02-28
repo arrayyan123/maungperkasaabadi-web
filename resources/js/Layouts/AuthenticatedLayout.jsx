@@ -3,13 +3,12 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { faCube } from '@fortawesome/free-solid-svg-icons';
+import { faCube, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link, usePage } from '@inertiajs/react';
 import IonIcon from '@reacticons/ionicons';
 import { useState, useEffect } from 'react';
 import { Fade } from 'react-awesome-reveal';
-
 
 const pngImages = import.meta.glob("/public/assets/Images/*.png", { eager: true });
 const webpImages = import.meta.glob("/public/assets/Images/*.webp", { eager: true });
@@ -126,7 +125,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <li>
                             <NavLink href={route('AboutUsManage.dashboard')} active={route().current('AboutUsManage.dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
-                                    <IonIcon className='text-[20px]' name="bar-chart"></IonIcon>
+                                    <IonIcon className='text-[20px]' name="people"></IonIcon>
                                     <span
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}
@@ -139,7 +138,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         <li>
                             <NavLink href={route('BlogManage.dashboard')} active={route().current('BlogManage.dashboard')}>
                                 <div className='py-2 px-4 rounded cursor-pointer text-white flex items-center gap-4'>
-                                    <IonIcon className='text-[20px]' name="business"></IonIcon>
+                                    <FontAwesomeIcon className='text-[20px]' icon={faNewspaper} />
                                     <span
                                         className={`${isSidebarExpanded ? "block" : "hidden"
                                             } text-sm`}

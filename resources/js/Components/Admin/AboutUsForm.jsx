@@ -45,37 +45,37 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Cek apakah title dan description terisi
         if (!formData.title || !formData.description) {
             alert('Title and description are required.');
             return;
         }
-    
+
         const dataToSend = new FormData();
-    
+
         // Kirim data title dan description
         dataToSend.append('title', formData.title);
         dataToSend.append('description', formData.description);
-    
+
         if (formData.image1) {
             dataToSend.append('image1', formData.image1);
         } else {
             dataToSend.append('old_image1', aboutUs.image1);
         }
-    
+
         if (formData.image2) {
             dataToSend.append('image2', formData.image2);
         } else {
             dataToSend.append('old_image2', aboutUs.image2);
         }
-    
+
         if (formData.image3) {
             dataToSend.append('image3', formData.image3);
         } else {
             dataToSend.append('old_image3', aboutUs.image3);
         }
-    
+
         try {
             const response = aboutUs
                 ? await axios.post(`/api/aboutus/${aboutUs.id}`, dataToSend, {
@@ -90,7 +90,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-    
+
             alert('About Us saved successfully');
             onUpdate();
             onClose();
@@ -103,7 +103,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
+            className="p-6 text-black rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
                 {aboutUs ? 'Edit About Us' : 'Add New About Us'}
@@ -118,7 +118,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -130,7 +130,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                     value={formData.description}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 ></textarea>
             </div>
 
@@ -152,7 +152,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                     name="image1"
                     onChange={handleFileChange}
                     accept="image/*"
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -174,7 +174,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                     name="image2"
                     onChange={handleFileChange}
                     accept="image/*"
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -196,7 +196,7 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                     name="image3"
                     onChange={handleFileChange}
                     accept="image/*"
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -208,13 +208,15 @@ function AboutUsForm({ aboutUs, onClose, onUpdate }) {
                 >
                     {aboutUs ? 'Update' : 'Submit'}
                 </button>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                >
-                    Cancel
-                </button>
+                {aboutUs && (
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
         </form>
     );

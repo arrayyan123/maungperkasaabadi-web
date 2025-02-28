@@ -56,7 +56,7 @@ export default function Newsletter() {
     };
 
     return (
-        <div className="w-full mx-auto">
+        <div className="p-6 w-full mx-auto">
             <h1 className="text-2xl font-bold mb-4">Create Newsletter</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
@@ -72,7 +72,6 @@ export default function Newsletter() {
                         required
                     />
                 </div>
-
                 {/* Body */}
                 <div className="mb-4">
                     <label htmlFor="body" className="block text-sm font-medium text-black">
@@ -81,7 +80,7 @@ export default function Newsletter() {
                     <div ref={quillRef} className="mt-2 bg-white text-black rounded" style={{ minHeight: "150px" }} />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="image" className="block text-sm font-medium text-white">
+                    <label htmlFor="image" className="block text-sm font-medium text-black">
                         Image (optional)
                     </label>
                     <input

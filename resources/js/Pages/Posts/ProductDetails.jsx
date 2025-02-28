@@ -25,11 +25,6 @@ function ProductDetails() {
     <>
       <WebsiteLayout>
         <Head title="Product" />
-        {/* {!isProductSelected &&
-          <HeroProduct
-            onProductSelect={handleProductSelect}
-          />
-        } */}
         <MainProduct
           isProductSelected={isProductSelected}
           selectedProduct={selectedProduct}

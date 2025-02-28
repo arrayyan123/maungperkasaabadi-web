@@ -14,7 +14,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
             setFormData({
                 title: OurService.title || '',
                 link_web: OurService.link_web || '',
-                image: null, 
+                image: null,
             });
         } else {
             setFormData({
@@ -37,23 +37,23 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!formData.title || !formData.link_web) {
             alert('Title and link web are required.');
             return;
         }
-    
+
         const dataToSend = new FormData();
-    
+
         dataToSend.append('title', formData.title);
         dataToSend.append('link_web', formData.link_web);
-    
+
         if (formData.image) {
             dataToSend.append('image', formData.image);
         } else {
             dataToSend.append('old_image', OurService.image);
         }
-    
+
         try {
             const response = OurService
                 ? await axios.post(`/api/services/${OurService.id}`, dataToSend, {
@@ -68,7 +68,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-    
+
             alert('OurService saved successfully');
             onUpdate();
             onClose();
@@ -81,7 +81,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
+            className="p-6 text-black rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
                 {OurService ? 'Edit Our Service' : 'Add New Our Service'}
@@ -96,7 +96,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full"
                 />
             </div>
 
@@ -109,7 +109,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
                     value={formData.link_web}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full"
                 />
             </div>
 
@@ -131,7 +131,7 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
                     name="image"
                     onChange={handleFileChange}
                     accept="image/*"
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full"
                 />
             </div>
 
@@ -143,13 +143,15 @@ function OurServiceForm({ OurService, onClose, onUpdate }) {
                 >
                     {OurService ? 'Update' : 'Submit'}
                 </button>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                >
-                    Cancel
-                </button>
+                {OurService && (
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
         </form>
     )

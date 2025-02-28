@@ -20,6 +20,7 @@ function WebsiteLayout({ children }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [navbarBackground, setNavbarBackground] = useState('bg-transparent');
     const [navbarText, setNavbarText] = useState('text-white');
+    const [navbarPosition, setNavbarPosition] = useState('absolute')
     const [name, setName] = useState("");
     const [email, setEmail] = useState('');
     const [activeLink, setActiveLink] = useState('/');
@@ -122,141 +123,163 @@ function WebsiteLayout({ children }) {
                 </div>
                 {/* Navigation Links */}
                 {/* <div className="flex lg:flex-row flex-col lg:justify-between md:mt-0 mt-8 space-x-10"> */}
-                    <ul className={`${isMenuOpen ? "max-h-screen lg:mt-0 mt-4 opacity-100" : "max-h-0 opacity-0"
-                        } lg:opacity-100 lg:max-h-full flex lg:mx-auto lg:flex-row flex-col items-center lg:justify-end w-full lg:space-x-6 space-x-2 overflow-hidden transition-all duration-300 ease-in-out`}>
-                        <div className='flex md:flex-row flex-col gap-3 md:w-auto w-full'>
-                            <li><a className={`text-md ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/`}>Home</a></li>
-                            <li className="text-gray-300 md:block hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </li>
-                            <li>
-                                <Dropdown 
-                                    label="" dismissOnClick={false} 
-                                    renderTrigger={() => <span className={`${navbarText} text-md`}>Produk</span>}
-                                    className="relative z-50"
-                                >
-                                    {products.map((product) => (
-                                        <Dropdown.Item key={product.id}>
-                                            <span
-                                                onClick={() => handleProductSelect(product.id)}
-                                                className="cursor-pointer"
-                                            >
-                                                {product.type_product}
-                                            </span>
-                                        </Dropdown.Item>
-                                    ))}
-                                </Dropdown>
-                            </li>
-                            <li className="text-gray-300 md:block hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </li>
-                            <li><a className={`text-md ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/about-us`}>Tentang Kami</a></li>
-                            <li className="text-gray-300 md:block hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </li>
-                            <li><a className={`text-md ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/blog`}>Blog</a></li>
-                            <li className="text-gray-300 md:block hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </li>
-                            <li><a className={`text-md ${navbarText} hover:text-gray-500 whitespace-nowrap flex-shrink-0`} href={`/contactus`}>Hubungi Kami</a></li>
-                        </div>
-                        <li
-                            className="lg:mt-2 mt-4"
-                        >
-                            <a href={`/ourservice`}>
-                                <button className="bg-gray-800 text-white hover:bg-gray-700 py-2 px-6 rounded-[10px] text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg w-full lg:w-auto">
-                                    <p className="text-md whitespace-nowrap">
-                                        Our services
-                                    </p>
-                                </button>
-                            </a>
+                <ul className={`${isMenuOpen ? "max-h-screen lg:mt-0 mt-4 opacity-100" : "max-h-0 opacity-0"
+                    } lg:opacity-100 lg:max-h-full flex lg:mx-auto lg:flex-row flex-col items-center lg:justify-end w-full lg:space-x-6 space-x-2 overflow-hidden transition-all duration-300 ease-in-out`}>
+                    <div className='flex md:flex-row flex-col gap-3 md:w-auto w-full'>
+                        <li><a className={`text-md ${navbarText} hover:text-gray-500 font-extrabold whitespace-nowrap flex-shrink-0`} href={`/`}>Home</a></li>
+                        <li className="text-gray-300 md:block hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
                         </li>
-                    </ul>
+                        <li><a className={`text-md ${navbarText} hover:text-gray-500 font-extrabold whitespace-nowrap flex-shrink-0`} href={`/about-us`}>Tentang Kami</a></li>
+                        <li className="text-gray-300 md:block hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                        </li>
+                        <li>
+                            <Dropdown
+                                label="" dismissOnClick={false}
+                                renderTrigger={() => 
+                                <span className={`${navbarText} text-md flex flex-row items-center gap-1 font-extrabold`}>
+                                    <h1>Produk</h1>
+                                    <IonIcon name='chevron-down' />
+                                </span>}
+                                className="relative z-50"
+                            >
+                                {products.map((product) => (
+                                    <Dropdown.Item key={product.id}>
+                                        <span
+                                            onClick={() => handleProductSelect(product.id)}
+                                            className="cursor-pointer"
+                                        >
+                                            {product.type_product}
+                                        </span>
+                                    </Dropdown.Item>
+                                ))}
+                            </Dropdown>
+                        </li>
+                        <li className="text-gray-300 md:block hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                        </li>
+                        <li><a className={`text-md ${navbarText} hover:text-gray-500 font-extrabold whitespace-nowrap flex-shrink-0`} href={`/blog-page`}>Blog</a></li>
+                        <li className="text-gray-300 md:block hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" className="w-4 h-4 current-fill" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                        </li>
+                        <li><a className={`text-md ${navbarText} hover:text-gray-500 font-extrabold whitespace-nowrap flex-shrink-0`} href={`/contactus`}>Hubungi Kami</a></li>
+                    </div>
+                    <li
+                        className="lg:mt-0 mt-4"
+                    >
+                        <a href={`/ourservice`}>
+                            <button className="bg-gray-800 text-white hover:bg-gray-700 py-2 px-6 rounded-[10px] text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg w-full lg:w-auto">
+                                <p className="text-md whitespace-nowrap">
+                                    Our services
+                                </p>
+                            </button>
+                        </a>
+                    </li>
+                </ul>
                 {/* </div> */}
             </nav>
 
             {/* content page */}
-            <div className='md:px-6 px-3'>
+            <div className=''>
                 {children}
+            </div>
+
+            <div className="w-full mb-4 p-5">
+                <span className="flex flex-row items-center gap-3 text-black">
+                    <IonIcon className="text-2xl" name="mail" />
+                    <h1 className="text-2xl font-bold">Subscribe to our Newsletter</h1>
+                </span>
+                <p className="mb-4">
+                    Tetap Up to date dengan perkembangan mengenai perusahaan kami.
+                </p>
+                <form onSubmit={handleSubmit}>
+                    <div className="flex md:flex-row flex-col items-center gap-4 max-w-2xl">
+                        <div className=" w-full">
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                                Name
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                required
+                            />
+                        </div>
+                        <div className=" w-full">
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                Email
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                required
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className={`px-4 py-2 mt-6 text-white rounded-md ${isLoading ? "bg-gray-400" : "bg-blue-600"
+                                }`}
+                            disabled={isLoading}
+                        >
+                            <span className="flex flex-row gap-4 items-center">
+                                <p>{isLoading ? "Subscribing..." : "Subscribe"}</p>
+                                <IonIcon name="send" />
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
 
             {/* footer */}
             <footer class="bg-gray-100 dark:bg-gray-900">
-                <div className="w-full p-5">
-                    <span className="flex flex-row items-center gap-3 text-black">
-                        <IonIcon className="text-2xl" name="mail" />
-                        <h1 className="text-2xl font-bold">Subscribe to our Newsletter</h1>
-                    </span>
-                    <p className="mb-4">
-                        Tetap Up to date dengan perkembangan mengenai perusahaan kami.
-                    </p>
-                    <form onSubmit={handleSubmit}>
-                        <div className="flex md:flex-row flex-col items-center gap-4 max-w-2xl">
-                            <div className=" w-full">
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                    Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                                    required
-                                />
-                            </div>
-                            <div className=" w-full">
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                    Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                                    required
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className={`px-4 py-2 mt-6 text-white rounded-md ${isLoading ? "bg-gray-400" : "bg-blue-600"
-                                    }`}
-                                disabled={isLoading}
-                            >
-                                <span className="flex flex-row gap-4 items-center">
-                                    <p>{isLoading ? "Subscribing..." : "Subscribe"}</p>
-                                    <IonIcon name="send" />
-                                </span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
                 <div className='flex md:flex-row flex-col items-center justify-between'>
-                    <div class="max-w-5xl mt- flex md:flex-row flex-col md:space-x-7 px-4 py-2 sm:px-6 lg:px-9">
+                    <div class="max-w-xl flex flex-col md:items-start items-center px-4 py-2 sm:px-6 lg:px-9">
                         <div class="flex text-teal-600 dark:text-teal-300">
                             <img className='w-[150px] h-auto' src={logo} alt="logo maung" />
                         </div>
-                        <div className='flex flex-col w-1/2'>
+                        <div className='flex flex-col w-2/1 md:items-start items-center'>
                             <h1 className="mt-6 text-black text-[20px] max-w-md black leading-relaxed font-bold">
                                 PT. Maung Perkasa Abadi
                             </h1>
-                            <p className='text-black'>
+                            <p className='text-black md:text-left text-center'>
                                 Kualitas, Kepercayaan, dan Kepuasan Pelanggan.
                             </p>
                         </div>
                     </div>
-                    <div className='flex flex-col mt-6 gap-6 items-center px-4 py-10 sm:px-6 lg:px-9'>
-                        <h1>Find More About Us</h1>
+                    <div className='flex lg:w-1/3 flex-col mt-6 gap-6 lg:items-end items-center px-4 sm:px-6 lg:px-9'>
+                        <div className='w-full'>
+                            <h1 className='text-black font-bold text-[34px]'>Contacts</h1>
+                            <div className='border-b-4 border-black' />
+                            <div className='flex flex-col mt-4'>
+                                <span className='flex flex-row gap-3 '>
+                                    <IonIcon name='call' className='text-black text-[18px]' />
+                                    <p className='text-black'>(+62)882-1167-5711</p>
+                                </span>
+                                <span className='flex flex-row gap-3 '>
+                                    <IonIcon name='mail' className='text-black text-[18px]' />
+                                    <p className='text-black'>maungperkasaabadi@gmail.com</p>
+                                </span>
+                                <span className='flex flex-row gap-3 '>
+                                    <IonIcon name='pin' className='text-black text-[18px]' />
+                                    <p className='text-black w-full'>Taman Mutiara</p>
+                                </span>
+                            </div>
+                        </div>
                         <ul class=" flex justify-center gap-6 md:gap-8">
                             <li>
                                 <a
@@ -287,14 +310,14 @@ function WebsiteLayout({ children }) {
                                     target="_blank"
                                     class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
                                 >
-                                    <span class="sr-only">Twitter</span>
-                                    <IonIcon className='text-[30px]' name='logo-twitter' />
+                                    <span class="sr-only">WhatsApp</span>
+                                    <IonIcon className='text-[30px]' name='logo-whatsapp' />
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
-                <div className='flex p-4 gap-2 flex-col my-2'>
+                <div className='flex p-4 gap-2 flex-col'>
                     <div className='border-b-2 border-gray-400'></div>
                     <h2>© copyright 2024 PT. Maung Perkasa Abadi. all rights reserved</h2>
                 </div>

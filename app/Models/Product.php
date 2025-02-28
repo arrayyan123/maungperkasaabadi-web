@@ -10,12 +10,14 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $table = 'products';
     protected $keyType = 'string';
     public $incrementing = false;
 
     protected $fillable = [
         'type_product',
         'description_product',
+        'image',
     ];
 
     protected static function boot()

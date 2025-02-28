@@ -14,7 +14,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
             setFormData({
                 title: Partnership.title || '',
                 description: Partnership.description || '',
-                image: null, 
+                image: null,
             });
         } else {
             setFormData({
@@ -37,23 +37,23 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (!formData.title || !formData.description) {
             alert('Title and description are required.');
             return;
         }
-    
+
         const dataToSend = new FormData();
-    
+
         dataToSend.append('title', formData.title);
         dataToSend.append('description', formData.description);
-    
+
         if (formData.image) {
             dataToSend.append('image', formData.image);
         } else {
             dataToSend.append('old_image', Partnership.image);
         }
-    
+
         try {
             const response = Partnership
                 ? await axios.post(`/api/partnership/${Partnership.id}`, dataToSend, {
@@ -68,7 +68,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-    
+
             alert('Partnership saved successfully');
             onUpdate();
             onClose();
@@ -81,7 +81,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="p-6 bg-gray-800 text-white rounded shadow-md mb-6"
+            className="p-6 text-black rounded shadow-md mb-6"
         >
             <h3 className="text-xl font-semibold mb-4">
                 {Partnership ? 'Edit Partnership' : 'Add New Partnership'}
@@ -96,7 +96,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
                     value={formData.title}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -108,7 +108,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
                     value={formData.description}
                     onChange={handleChange}
                     required
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 ></textarea>
             </div>
 
@@ -130,7 +130,7 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
                     name="image"
                     onChange={handleFileChange}
                     accept="image/*"
-                    className="border border-gray-700 rounded p-2 w-full bg-gray-900 text-white"
+                    className="border border-gray-700 rounded p-2 w-full "
                 />
             </div>
 
@@ -142,13 +142,15 @@ function PartnershipForm({ Partnership, onClose, onUpdate }) {
                 >
                     {Partnership ? 'Update' : 'Submit'}
                 </button>
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
-                >
-                    Cancel
-                </button>
+                {Partnership && (
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                    >
+                        Cancel
+                    </button>
+                )}
             </div>
         </form>
     )

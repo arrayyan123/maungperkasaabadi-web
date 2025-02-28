@@ -5,20 +5,38 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import ReCAPTCHA from 'react-google-recaptcha';
+import React, { useRef, useState } from 'react';
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
+        g_recaptcha_response: '',
     });
+
+    const recaptchaRef = useRef(null);
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
-        });
+        const recaptchaValue = recaptchaRef.current.getValue();
+        if (!recaptchaValue) {
+            alert('Please complete the reCAPTCHA.');
+            return;
+        }
+
+        setData('g_recaptcha_response', recaptchaValue);
+        setTimeout(() => {
+            post(route('login'), {
+                data: data,
+                onFinish: () => {
+                    reset('password');
+                    recaptchaRef.current.reset();
+                },
+            });
+        }, 0);
     };
 
     return (
@@ -78,6 +96,15 @@ export default function Login({ status, canResetPassword }) {
                             Remember me
                         </span>
                     </label>
+                </div>
+
+                <div className='mt-3'>
+                    <ReCAPTCHA
+                        ref={recaptchaRef}
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        onChange={(token) => setData('g_recaptcha_response', token)}
+                    />
+                    {errors.g_recaptcha_response && <div>{errors.g_recaptcha_response}</div>}
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">

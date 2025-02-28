@@ -55,12 +55,12 @@ function OurServiceManage() {
             <AuthenticatedLayout
                 header={
                     <h2 className="text-2xl font-bold text-white">
-                        Dashboard - Services Management
+                        Services Management
                     </h2>
                 }
             >
                 <Head title="Service Management" />
-                <div className="p-6 bg-gradient-to-b from-gray-800 to-gray-900 text-white min-h-screen">
+                <div className="p-6 min-h-screen">
                     <div ref={formRef}>
                         <OurServiceForm
                             OurService={selectedService}

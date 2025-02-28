@@ -34,7 +34,7 @@ const ContactUsForm = () => {
     };
 
     return (
-        <div className="w-full my-10 text-black ">
+        <div className="w-full my-10 text-black px-8">
             <div className='flex lg:flex-row flex-col gap-5 items-center'>
                 <div className='w-full flex flex-col space-y-4'>
                     <h1 className='text-5xl text-black font-extrabold'>Contact Us</h1>

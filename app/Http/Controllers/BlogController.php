@@ -15,7 +15,7 @@ class BlogController extends Controller
      */
     public function index()
     {
-        $blogs = Blog::with('images')->orderBy('created_at', 'desc')->get();
+        $blogs = Blog::with('images', 'comments', 'blogType')->orderBy('created_at', 'desc')->get();
         return response()->json($blogs);
     }
 
@@ -35,12 +35,16 @@ class BlogController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'author' => 'required|string|max:255',
+            'blog_type_id' => 'required|exists:blog_types,id',
             'images.*' => 'nullable|image',
         ]);
     
         $blog = Blog::create([
             'title' => $validated['title'],
             'description' => $validated['description'],
+            'author' => $validated['author'],
+            'blog_type_id' => $validated['blog_type_id'],
         ]);
     
         if ($request->hasFile('images')) {
@@ -58,11 +62,12 @@ class BlogController extends Controller
      */
     public function show($id)
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with(['images', 'comments', 'blogType'])->findOrFail($id);
 
         if (!$blog) {
             return redirect()->json(['message' => 'Blog tidak ditemukan'], 404);
         }
+        return response()->json($blog);
     }
 
     /**
@@ -83,14 +88,18 @@ class BlogController extends Controller
         $validated = $request->validate([
             'title' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
+            'author' => 'sometimes|required|string|max:255',
+            'blog_type_id' => 'sometimes|required|exists:blog_types,id',
             'images.*' => 'nullable|image',
             'delete_images' => 'nullable|array', 
-            'delete_images.*' => 'integer',
+            'delete_images.*' => 'string|uuid',
         ]);
     
         $blog->update([
             'title' => $validated['title'] ?? $blog->title,
             'description' => $validated['description'] ?? $blog->description,
+            'author' => $validated['author'] ?? $blog->author,
+            'blog_type_id' => $validated['blog_type_id'] ?? $blog->blog_type_id,
         ]);
 
         if ($request->hasFile('images')) {

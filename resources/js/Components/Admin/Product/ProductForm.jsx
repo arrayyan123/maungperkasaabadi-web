@@ -6,15 +6,19 @@ import axios from 'axios';
 function ProductForm({ product, onClose, onUpdate }) {
     const [typeProduct, setTypeProduct] = useState('');
     const [descriptionProduct, setDescriptionProduct] = useState('');
+    const [image, setImage] = useState(null)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [currentImage, setCurrentImage] = useState('');
 
     const { quill, quillRef } = useQuill();
 
     useEffect(() => {
         if (product) {
-            setTypeProduct(product.type_product);
-            setDescriptionProduct(product.description_product);
+            setTypeProduct(product.type_product || '');
+            setDescriptionProduct(product.description_product || '');
+            setCurrentImage(product.image || '');
+            setImage(null);
 
             if (quill) {
                 quill.clipboard.dangerouslyPasteHTML(product.description_product || '');
@@ -26,6 +30,8 @@ function ProductForm({ product, onClose, onUpdate }) {
             if (quill) {
                 quill.clipboard.dangerouslyPasteHTML('');
             }
+            setCurrentImage('');
+            setImage(null);
         }
     }, [product, quill]);
 
@@ -37,6 +43,13 @@ function ProductForm({ product, onClose, onUpdate }) {
         }
     }, [quill]);
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -46,9 +59,15 @@ function ProductForm({ product, onClose, onUpdate }) {
         formData.append('type_product', typeProduct);
         formData.append('description_product', descriptionProduct);
 
+        if (image) {
+            formData.append('image', image);
+        } else if (currentImage) {
+            formData.append('old_image', currentImage);
+        }
+
         try {
             if (product) {
-                // Update produk jika ada produk yang dipilih
+                //buat update produk
                 await axios.post(`/api/products/${product.id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -67,6 +86,8 @@ function ProductForm({ product, onClose, onUpdate }) {
             alert('Product saved successfully!');
             setTypeProduct('');
             setDescriptionProduct('');
+            setImage(null);
+            setCurrentImage('');
             if (quill) {
                 quill.clipboard.dangerouslyPasteHTML('');
             }
@@ -74,6 +95,7 @@ function ProductForm({ product, onClose, onUpdate }) {
             onClose();
             onUpdate();
         } catch (err) {
+            console.error(err);
             setError('Failed to save product. Please try again.');
         } finally {
             setLoading(false);
@@ -81,8 +103,7 @@ function ProductForm({ product, onClose, onUpdate }) {
     };
 
     return (
-        <div className='flex flex-col item-center justify-center w-full'>
-            {/*title nya harus berubah sesuai dengan yang kita pilih. jika sedang mengisi data baru, maka*/}
+        <div className='flex flex-col item-center justify-center text-black w-full'>
             <h1 className='font-bold text-[23px] text-center'>
                 {product ? 'Edit Product' : 'Add Product'}
             </h1>
@@ -102,6 +123,26 @@ function ProductForm({ product, onClose, onUpdate }) {
                     <div className="border p-2">
                         <div ref={quillRef} style={{ minHeight: '150px' }} />
                     </div>
+                </div>
+                <div className="mb-4">
+                    <label className="block mb-1">Image</label>
+                    {currentImage && (
+                        <div className="mb-2">
+                            <img
+                                src={`/storage/${currentImage}`}
+                                alt="Current Image"
+                                className="w-20 h-20 object-cover rounded"
+                            />
+                            <p className="text-gray-400 text-sm">Current image</p>
+                        </div>
+                    )}
+                    <input
+                        type="file"
+                        name="image"
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="border border-gray-700 rounded p-2 w-full"
+                    />
                 </div>
                 {error && <p className="text-red-500">{error}</p>}
                 <div className="flex md:flex-row flex-col gap-4">

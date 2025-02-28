@@ -5,6 +5,8 @@ import IonIcon from '@reacticons/ionicons'
 import ProductForm from '@/Components/Admin/Product/ProductForm';
 import AboutUsForm from '@/Components/Admin/AboutUsForm';
 import PartnershipForm from '@/Components/Admin/PartnershipForm';
+import WhyChooseForm from '@/Components/Admin/WhyChooseForm';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const svgImages = import.meta.glob('/public/assets/Images/*.svg', { eager: true });
 const pngImages = import.meta.glob('/public/assets/Images/*.png', { eager: true });
@@ -22,20 +24,17 @@ function HomeManage() {
     const [partnerships, setPartnerships] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [selectedAboutUs, setSelectedAboutUs] = useState(null);
+    const [whyContent, setWhyContent] = useState([])
+    const [selectedWhyContent, setSelectedWhyContent] = useState(null)
     const [selectedPartnership, setSelectedPartnership] = useState(null);
-    const [openAboutUsManage, setOpenAboutUsManage] = useState(false);
-    const [openPartnership, setOpenPartnership] = useState(false);
+    const [currentTab, setCurrentTab] = useState("aboutusmanage");
+    const tabs = [
+        { label: "About Us Manage", value: "aboutusmanage" },
+        { label: "Partnership Manage", value: "partnershipmanage" },
+        { label: "'Why Choose' Manage", value: "whychoosemanage" },
+    ];
+
     const formRef = useRef(null);
-
-    const toggleOpenAboutUsManage = () => {
-        setOpenAboutUsManage(!openAboutUsManage);
-        setOpenPartnership(false);
-    };
-
-    const toggleOpenPartnership = () => {
-        setOpenPartnership(!openPartnership);
-        setOpenAboutUsManage(false);
-    }
 
     const fetchAboutUs = async () => {
         try {
@@ -53,7 +52,17 @@ function HomeManage() {
             const data = await response.json();
             setPartnerships(data);
         } catch (error) {
-            console.error('Error fetching About Us:', error);
+            console.error('Error fetching Partnership:', error);
+        }
+    }
+
+    const fetchWhyContent = async () => {
+        try {
+            const response = await fetch('/api/whycontents');
+            const data = await response.json();
+            setWhyContent(data)
+        } catch (error) {
+            console.error('Error fetching "Why Content"', error);
         }
     }
 
@@ -71,9 +80,17 @@ function HomeManage() {
         }
     }
 
+    const handleEditWhyContent = (content) => {
+        setSelectedWhyContent(content);
+        if (formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
     useEffect(() => {
         fetchAboutUs();
         fetchPartnership();
+        fetchWhyContent();
     }, [refresh]);
 
     const handleDeleteAboutUs = async (aboutUsId) => {
@@ -124,54 +141,26 @@ function HomeManage() {
                     </h2>
                 }
             >
-                <Head title="Home Management" />
-                <div className="p-6 bg-white text-black min-h-screen">
-                    <div className='grid lg:grid-cols-3 grid-cols-1 h-[350px] gap-4 px-0 py-3'>
-                        <div
-                            onClick={toggleOpenAboutUsManage}
-                            className="relative rounded-[22px] cursor-pointer bg-gradient-to-r from-purple-600 to-blue-600 h-auto w-auto text-white overflow-hidden"
-                        >
-                            <div className="absolute inset-0">
-                                <div className="absolute inset-0 bg-black opacity-50"></div>
-                            </div>
-                            <div className="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
-                                <div className=" flex mt-0 flex-col justify-center lg:space-y-10 space-y-3 text-center">
-                                    <div
-                                        className={`relative text-white hover:font-bold cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-white before:origin-center before:h-[1px] motion motion-preset-shrink motion-delay-[100ms] before:w-0 ${openAboutUsManage ? 'before:w-[50%]' : ''
-                                            } before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-white after:origin-center after:h-[1px] after:w-0 ${openAboutUsManage ? 'after:w-[50%]' : ''
-                                            } after:bottom-0 after:right-[50%]`}>
-                                        <span className="lg:text-[30px] text-[23px]">About us Management</span>
-                                    </div>
-                                    <div className="relative mx-auto animate-bounce">
-                                        <IonIcon className="text-white text-[30px]" name="caret-down-outline" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            onClick={toggleOpenPartnership}
-                            className="relative rounded-[22px] cursor-pointer bg-gradient-to-r from-purple-600 to-blue-600 h-auto w-auto text-white overflow-hidden">
-                            <div class="absolute inset-0">
-                                <img src="https://images7.alphacoders.com/103/thumb-1920-1037113.jpg" alt="Background Image" class="object-cover object-center w-full h-full" />
-                                <div class="absolute inset-0 bg-black opacity-50"></div>
-                            </div>
-                            <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
-                                <div className="flex mt-0 flex-col justify-center lg:space-y-10 space-y-3 text-center">
-                                    <div
-                                        className={`relative text-white hover:font-bold cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-white before:origin-center before:h-[1px] motion motion-preset-shrink motion-delay-[200ms] before:w-0 ${openPartnership ? 'before:w-[50%]' : ''
-                                            } before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-white after:origin-center after:h-[1px] after:w-0 ${openPartnership ? 'after:w-[50%]' : ''
-                                            } after:bottom-0 after:right-[50%]`}>
-                                        <span className="lg:text-[30px] text-[23px]">Partnership Management</span>
-                                    </div>
-                                    <div className="relative mx-auto animate-bounce">
-                                        <IonIcon className="text-white text-[30px]" name="caret-down-outline" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <Head title="Content Management" />
+                <div className="mx-auto w-full sm:px-4 lg:px-5 py-5 bg-white text-black min-h-screen">
+                    <div className="flex border-b overflow-x-auto border-gray-200">
+                        {tabs.map(({ label, value }) => (
+                            <button
+                                key={value}
+                                onClick={() => {
+                                    setCurrentTab(value);
+                                }}
+                                className={`py-2 px-4 text-sm font-medium ${currentTab === value
+                                    ? "border-b-2 border-blue-500 text-blue-500"
+                                    : "text-gray-500 hover:text-blue-500"
+                                    }`}
+                            >
+                                {label}
+                            </button>
+                        ))}
                     </div>
-                    {openAboutUsManage && (
-                        <div>
+                    {currentTab === 'aboutusmanage' && (
+                        <div className="mt-4">
                             <div ref={formRef}>
                                 <AboutUsForm
                                     aboutUs={selectedAboutUs}
@@ -182,9 +171,9 @@ function HomeManage() {
                             <div className="my-6">
                                 <h3 className="text-xl font-semibold mb-4">About Us List</h3>
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full bg-gray-800 text-white rounded-lg shadow-md">
+                                    <table className="min-w-full text-black rounded-lg shadow-md">
                                         <thead>
-                                            <tr className="bg-gray-700 text-left">
+                                            <tr className="text-left">
                                                 <th className="py-3 px-4">Title</th>
                                                 <th className="py-3 px-4">Description</th>
                                                 <th className="py-3 px-4">Images</th>
@@ -193,7 +182,7 @@ function HomeManage() {
                                         </thead>
                                         <tbody>
                                             {aboutUs.map((item) => (
-                                                <tr key={item.id} className="border-t border-gray-700 hover:bg-gray-700">
+                                                <tr key={item.id} className="border-t border-gray-700">
                                                     <td className="py-3 px-4">{item.title}</td>
                                                     <td className="py-3 px-4">{item.description}</td>
                                                     <td className="py-3 px-4 flex flex-col space-y-2">
@@ -234,8 +223,8 @@ function HomeManage() {
                             </div>
                         </div>
                     )}
-                    {openPartnership && (
-                        <div>
+                    {currentTab === 'partnershipmanage' && (
+                        <div className="mt-4">
                             <div ref={formRef}>
                                 <PartnershipForm
                                     Partnership={selectedPartnership}
@@ -244,7 +233,7 @@ function HomeManage() {
                                 />
                             </div>
                             <div className="my-6">
-                                <h3 className="text-xl font-semibold mb-4">About Us List</h3>
+                                <h3 className="text-xl font-semibold mb-4">Partnership List</h3>
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full bg-gray-800 text-white rounded-lg shadow-md">
                                         <thead>
@@ -277,6 +266,63 @@ function HomeManage() {
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeletePartnership(partnership.id)}
+                                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {partnerships.length === 0 && (
+                                        <p className="text-center text-gray-400 mt-4">
+                                            No partnerships items found.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {currentTab === 'whychoosemanage' && (
+                        <div>
+                            <div ref={formRef}>
+                                <WhyChooseForm
+                                    content={selectedWhyContent}
+                                    onUpdate={() => setSelectedWhyContent(null)}
+                                    onClose={() => setRefresh(!refresh)}
+                                />
+                            </div>
+                            <div className="my-6">
+                                <h3 className="text-xl font-semibold mb-4">Why Content List</h3>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full bg-gray-800 text-white rounded-lg shadow-md">
+                                        <thead>
+                                            <tr className="bg-gray-700 text-left">
+                                                <th className="py-3 px-4">Title</th>
+                                                <th className="py-3 px-4">Description</th>
+                                                <th className="py-3 px-4">Icon</th>
+                                                <th className="py-3 px-4">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {whyContent.map((content) => (
+                                                <tr key={content.id} className="border-t border-gray-700 hover:bg-gray-700">
+                                                    <td className="py-3 px-4">{content.title}</td>
+                                                    <td className="py-3 px-4">{content.description}</td>
+                                                    <td className="py-3 px-4 flex flex-col space-y-2">
+                                                        
+                                                        <FontAwesomeIcon icon={`fa-solid ${content.icon_code}`} className="" />
+                                                    </td>
+                                                    <td className="py-3 px-4 items-center space-y-2">
+                                                        <button
+                                                            onClick={() => handleEditWhyContent(content)}
+                                                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded mr-2"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            //onClick={() => handleDeletePartnership(content.id)}
                                                             className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
                                                         >
                                                             Delete

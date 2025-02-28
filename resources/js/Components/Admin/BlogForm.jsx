@@ -7,16 +7,34 @@ function BlogForm({ Blog, onClose, onUpdate }) {
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [author, setAuthor] = useState('');
     const [images, setImages] = useState([]);
     const [previewImages, setPreviewImages] = useState([]);
     const [deleteImages, setDeleteImages] = useState([]);
+    const [blogTypes, setBlogTypes] = useState([]);
+    const [blogTypeId, setBlogTypeId] = useState('');
 
     const { quill, quillRef } = useQuill();
+
+    useEffect(() => {
+        const fetchBlogTypes = async () => {
+            try {
+                const response = await axios.get('/api/blog-types');
+                setBlogTypes(response.data);
+            } catch (error) {
+                console.error('Error fetching blog types:', error);
+            }
+        };
+
+        fetchBlogTypes();
+    }, []);
 
     useEffect(() => {
         if (Blog) {
             setTitle(Blog.title || '');
             setDescription(Blog.description || '');
+            setAuthor(Blog.author || '');
+            setBlogTypeId(Blog.blog_type_id || '');
             setImages([]);
             setDeleteImages([]);
             setPreviewImages([]);
@@ -27,6 +45,8 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         } else {
             setTitle('');
             setDescription('');
+            setAuthor('');
+            setBlogTypeId('');
             setImages([]);
             setDeleteImages([]);
             setPreviewImages([]);
@@ -42,6 +62,7 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         if (quill) {
             quill.clipboard.dangerouslyPasteHTML('');
         }
+        setBlogTypeId('');
         setImages([]);
         setDeleteImages([]);
         setPreviewImages([]);
@@ -54,8 +75,10 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         setPreviewImages(previewURLs);
     };
 
-    const handleRemoveImage = (imageId) => {
-        setDeleteImages((prev) => [...prev, imageId]);
+    const handleMarkImageForDeletion = (imageId) => {
+        if (!deleteImages.includes(imageId)) {
+            setDeleteImages((prev) => [...prev, imageId]);
+        }
     };
 
     const handleRemovePreviewImage = (index) => {
@@ -76,6 +99,8 @@ function BlogForm({ Blog, onClose, onUpdate }) {
         const dataToSend = new FormData();
         dataToSend.append('title', title);
         dataToSend.append('description', quillDescription);
+        dataToSend.append('author', author);
+        dataToSend.append('blog_type_id', blogTypeId);
 
         images.forEach((image, index) => {
             dataToSend.append(`images[${index}]`, image);
@@ -119,7 +144,22 @@ function BlogForm({ Blog, onClose, onUpdate }) {
             <h3 className="text-xl font-semibold mb-4">
                 {Blog ? 'Edit Blog' : 'Add New Blog'}
             </h3>
-
+            <div className="mb-4">
+                <label className="block mb-1">Blog Type</label>
+                <select
+                    value={blogTypeId}
+                    onChange={(e) => setBlogTypeId(e.target.value)}
+                    className="border border-gray-400 rounded p-2 w-full"
+                    required
+                >
+                    <option value="">Select Blog Type</option>
+                    {blogTypes.map((type) => (
+                        <option key={type.id} value={type.id}>
+                            {type.type_blog}
+                        </option>
+                    ))}
+                </select>
+            </div>
             {/* Title */}
             <div className="mb-4">
                 <label className="block mb-1">Title</label>
@@ -132,13 +172,23 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                     placeholder="Enter the title"
                 />
             </div>
-
             {/* Description */}
             <div className="mb-4">
                 <label className="block mb-1">Description</label>
                 <div ref={quillRef} className="mt-2 bg-white text-black rounded" style={{ minHeight: '150px' }} />
             </div>
-
+            {/* Author */}
+            <div className="mb-4">
+                <label className="block mb-1">Author</label>
+                <input
+                    type="text"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    required
+                    className="border border-gray-700 rounded p-2 w-full text-black"
+                    placeholder="Enter the Author"
+                />
+            </div>
             {/* Image */}
             <div className="mb-4">
                 <label className="block mb-1">Images (Multiple file)</label>
@@ -152,22 +202,31 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                 {/* Display existing images */}
                 <div className="flex flex-wrap mt-4 gap-4">
                     Current Images
-                    {Blog && Blog.images && Blog.images.map((image) => (
-
+                    {Blog && Blog.images && Blog.images.map((image, idx) => (
                         <div key={image.id} className="relative">
                             <img
                                 src={`/storage/${image.path}`}
                                 alt="Blog Image"
-                                className="w-20 h-20 object-cover rounded mr-4"
+                                className={`w-20 h-20 object-cover rounded ${deleteImages.includes(image.id) ? 'opacity-50' : ''
+                                    }`}
                             />
+                            {idx === 0 && (
+                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-sm">
+                                    Thumbnail
+                                </div>
+                            )}
+                            {deleteImages.includes(image.id) && (
+                                <div className="absolute inset-0 bg-red-500 bg-opacity-50 flex items-center justify-center text-white font-bold text-sm">
+                                    Marked for Deletion
+                                </div>
+                            )}
                             <button
-                                onClick={() => handleRemoveImage(image.id)}
+                                onClick={() => handleMarkImageForDeletion(image.id)}
                                 className="absolute top-0 right-0 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full text-xs"
                             >
-                                x
+                                {deleteImages.includes(image.id) ? 'Undo' : 'x'}
                             </button>
                         </div>
-
                     ))}
                 </div>
                 {/* Preview selected images */}
@@ -181,6 +240,11 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                                     alt="Preview"
                                     className="w-20 h-20 object-cover rounded shadow"
                                 />
+                                {index === 0 && (
+                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold text-sm">
+                                        Thumbnail
+                                    </div>
+                                )}
                                 <button
                                     type="button"
                                     onClick={() => handleRemovePreviewImage(index)}
@@ -193,7 +257,6 @@ function BlogForm({ Blog, onClose, onUpdate }) {
                     </div>
                 )}
             </div>
-
             {/* Buttons */}
             <div className="flex space-x-4">
                 <button

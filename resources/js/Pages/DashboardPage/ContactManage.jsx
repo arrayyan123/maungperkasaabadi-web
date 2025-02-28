@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css';
 import moment from 'moment';
 import IonIcon from '@reacticons/ionicons';
-import axios from 'axios';
 
 function ContactManage({ contacts }) {
     const [reply, setReply] = useState('');
@@ -19,8 +19,18 @@ function ContactManage({ contacts }) {
     const [alertMessage, setAlertMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    const { quill, quillRef } = useQuill();
+
+    useEffect(() => {
+        if (quill) {
+            quill.on('text-change', () => {
+                setReply(quill.root.innerHTML);
+            });
+        }
+    }, [quill]);
+    
     const handleReply = async (e, id) => {
-        setIsLoading(true); // Mulai loading
+        setIsLoading(true); 
         setAlertMessage(null);
         e.preventDefault();
         try {
@@ -33,14 +43,14 @@ function ContactManage({ contacts }) {
                 body: JSON.stringify({ reply }),
             });
 
-            const data = await response.text(); // Ambil sebagai teks
+            const data = await response.text();
             console.log(data);
 
             if (response.ok) {
                 setAlertMessage('Reply sent successfully!');
                 setReply('');
+                if (quill) quill.setText('');
             } else {
-                const errorData = await response.json();
                 setAlertMessage('Failed to send reply. Please try again.');
             }
         } catch (error) {
@@ -151,7 +161,7 @@ function ContactManage({ contacts }) {
                     <div className="flex">
                         {/* Contact List */}
                         <div className="p-0  w-full text-black min-h-screen">
-                            <div className='px-6 md:py-8 py-4 sticky top-0 bg-white'>
+                            <div className='px-6 md:py-3 py-4 sticky top-0 bg-white'>
                                 <h1 className="text-2xl font-bold mb-5">Contacts</h1>
                                 <div className="flex flex-col md:flex-row gap-4 mb-5">
                                     <input
@@ -257,12 +267,7 @@ function ContactManage({ contacts }) {
                                             <h2 className="text-lg font-semibold my-4">
                                                 Reply to {selectedContact.name} ({selectedContact.email})
                                             </h2>
-                                            <ReactQuill
-                                                value={reply}
-                                                onChange={setReply}
-                                                className="border border-gray-300 rounded-md"
-                                                theme="snow"
-                                            />
+                                            <div ref={quillRef} className="border border-gray-300 rounded-md"></div>
                                             <button
                                                 onClick={(e) => handleReply(e, selectedContact.id)}
                                                 disabled={processing}

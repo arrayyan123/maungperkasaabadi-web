@@ -1,5 +1,6 @@
 import AboutSection01 from '@/Components/About/AboutSection01'
 import HeroAbout from '@/Components/About/HeroAbout'
+import Service_Section from '@/Components/About/Service_Section'
 import TeamSection from '@/Components/About/TeamSection'
 import AboutusHome from '@/Components/Home/AboutusHome'
 import WebsiteLayout from '@/Layouts/WebsiteLayout'
@@ -13,9 +14,9 @@ function AboutUs() {
         <WebsiteLayout>
             <Head title='about us' />
             <HeroAbout />
-            <AboutSection01 />
             <TeamSection />
             <AboutusHome />
+            <Service_Section />
         </WebsiteLayout>
     </>
   )

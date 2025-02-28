@@ -5,10 +5,12 @@ import IonIcon from '@reacticons/ionicons'
 import moment from 'moment';
 import BlogForm from '@/Components/Admin/BlogForm';
 import Newsletter from '@/Components/Admin/Newsletter';
-
+import BlogTypeForm from '@/Components/Admin/BlogTypeForm';
 
 function BlogManage() {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const [selectedBlog, setSelectedBlog] = useState(null);
+    const [selectedBlogType, setSelectedBlogType] = useState(null);
     const [blog, setBlog] = useState([]);
     const [news, setNews] = useState([]);
     const [subscriber, setSubscriber] = useState([]);
@@ -17,10 +19,16 @@ function BlogManage() {
     const [currentPageNews, setCurrentPageNews] = useState(1);
     const [currentPageSubscriber, setCurrentPageSubscriber] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [typeBlog, setTypeBlog] = useState([]);
+    const [comments, setComments] = useState([]);
+    const [selectedComments, setSelectedComments] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const [currentTab, setCurrentTab] = useState("blogmanage");
     const tabs = [
+        { label: "Blog Types Manage", value: "blogtype" },
         { label: "Blog Manage", value: "blogmanage" },
+        { label: "Blog Comments Manage", value: "commentmanage" },
         { label: "Newsletter Manage", value: "newslettermanage" },
     ];
 
@@ -38,6 +46,73 @@ function BlogManage() {
             console.error('Error fetching About Us:', error);
         }
     }
+
+    const fetchBlogType = async () => {
+        try {
+            const response = await fetch('/api/blog-types');
+            const data = await response.json();
+            setTypeBlog(data);
+        } catch (error) {
+            console.error('Error fetching blog:', error);
+        }
+    }
+
+    const fetchComments = async (blogId) => {
+        try {
+            const response = await fetch(`/api/blogs/${blogId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setComments(data.comments);
+            setSelectedComments([]);
+        } catch (error) {
+            console.error("Error fetching comments:", error);
+        }
+    };
+
+    const handleSelectBlog = (blog) => {
+        setSelectedBlog(blog);
+        fetchComments(blog.id);
+    };
+
+    const toggleCommentSelection = (commentId) => {
+        setSelectedComments((prev) =>
+            prev.includes(commentId)
+                ? prev.filter((id) => id !== commentId)
+                : [...prev, commentId]
+        );
+    };
+
+    const toggleSelectAllComments = () => {
+        if (selectedComments.length === comments.length) {
+            setSelectedComments([]);
+        } else {
+            setSelectedComments(comments.map((comment) => comment.id));
+        }
+    };
+
+    const deleteSelectedComments = async () => {
+        try {
+            await Promise.all(
+                selectedComments.map((id) =>
+                    fetch(`/api/comments/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                    })
+                )
+            );
+            alert('Selected comments deleted successfully!');
+            setShowDeleteModal(false);
+            fetchComments(selectedBlog.id);
+        } catch (error) {
+            console.error('Error deleting selected comments:', error);
+            alert('Failed to delete selected comments.');
+        }
+    };
 
     const fetchNewsletter = async () => {
         try {
@@ -60,6 +135,8 @@ function BlogManage() {
     }
 
     useEffect(() => {
+        fetchComments();
+        fetchBlogType();
         fetchSubscriber();
         fetchNewsletter();
         fetchBlog();
@@ -67,7 +144,11 @@ function BlogManage() {
 
     const handleEditBlog = (item) => {
         setSelectedBlog(item);
-        setIsModalOpen(true); // Open the modal when editing
+        setIsModalOpen(true);
+    };
+
+    const handleEditBlogType = (item) => {
+        setSelectedBlogType(item);
     };
 
     const indexOfLastBlog = currentPageBlogs * itemsPerPageBlogs;
@@ -98,7 +179,7 @@ function BlogManage() {
     };
 
     const handleDeleteBlog = async (blogId) => {
-        if (window.confirm('Are you sure you want to delete this About Us item?')) {
+        if (window.confirm('Are you sure you want to delete this Blog item?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 await fetch(`/api/blogs/${blogId}`, {
@@ -111,7 +192,27 @@ function BlogManage() {
                 alert('Blog item deleted successfully!');
                 setRefresh(!refresh);
             } catch (error) {
-                console.error('Error deleting About Us item:', error);
+                console.error('Error deleting Blog item:', error);
+                alert('Failed to delete Blog item. Please try again.');
+            }
+        }
+    };
+
+    const handleDeleteBlogType = async (blogTypeId) => {
+        if (window.confirm('Are you sure you want to delete this Blog Type item?')) {
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                await fetch(`/api/blog-types/${blogTypeId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                });
+                alert('Blog Type item deleted successfully!');
+                setRefresh(!refresh);
+            } catch (error) {
+                console.error('Error deleting Blog Type item:', error);
                 alert('Failed to delete Blog item. Please try again.');
             }
         }
@@ -208,8 +309,60 @@ function BlogManage() {
                             </button>
                         ))}
                     </div>
+                    {currentTab === "blogtype" && (
+                        <div className="mt-4 p-4">
+                            <BlogTypeForm
+                                blogType={selectedBlogType}
+                                onClose={() => setSelectedBlogType(null)}
+                                onUpdate={() => setRefresh(!refresh)}
+                            />
+                            <div className="my-6">
+                                <h3 className="text-xl font-semibold mb-4">Blog List</h3>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full bg-white md:border-none border text-black rounded-lg shadow-md">
+                                        <thead>
+                                            <tr className="bg-white text-left">
+                                                <th className="py-3 px-4">Tipe Blog</th>
+                                                <th className="py-3 px-4">Waktu Upload</th>
+                                                <th className="py-3 px-4">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {typeBlog.map((item) => (
+                                                <tr key={item.id} className="border-t border-gray-700">
+                                                    <td className="py-3 px-4">{item.type_blog}</td>
+                                                    <td className="py-3 px-4">
+                                                        {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
+                                                    </td>
+                                                    <td className="py-3 px-4 items-center space-y-2">
+                                                        <button
+                                                            onClick={() => handleEditBlogType(item)}
+                                                            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded mr-2"
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteBlogType(item.id)}
+                                                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    {typeBlog.length === 0 && (
+                                        <p className="text-center text-gray-400 mt-4">
+                                            No Blog Type items found.
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     {currentTab === "blogmanage" && (
-                        <div className="mt-4">
+                        <div className="mt-4 p-4">
                             <button
                                 onClick={() => {
                                     setSelectedBlog(null);
@@ -222,11 +375,12 @@ function BlogManage() {
                             <div className="my-6">
                                 <h3 className="text-xl font-semibold mb-4">Blog List</h3>
                                 <div className="overflow-x-auto">
-                                    <table className="min-w-full bg-white text-black rounded-lg shadow-md">
+                                    <table className="min-w-full bg-white md:border-none border text-black rounded-lg shadow-md">
                                         <thead>
                                             <tr className="bg-white text-left">
                                                 <th className="py-3 px-4">Title</th>
                                                 <th className="py-3 px-4">Description</th>
+                                                <th className="py-3 px-4">Type Blog</th>
                                                 <th className="py-3 px-4">Waktu Upload</th>
                                                 <th className="py-3 px-4">Images</th>
                                                 <th className="py-3 px-4">Actions</th>
@@ -241,6 +395,13 @@ function BlogManage() {
                                                             className="prose prose-sm max-w-none text-black"
                                                             dangerouslySetInnerHTML={{ __html: item.description.substring(0, 100) + (item.description.length > 100 ? '...' : '') }}
                                                         />
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        {item.blog_type && (
+                                                            <h3 className="text-sm text-black">
+                                                                {item.blog_type.type_blog || 'tidak ada'}
+                                                            </h3>
+                                                        )}
                                                     </td>
                                                     <td className="py-3 px-4">
                                                         {moment(item.created_at).format('MMMM Do, YYYY, h:mm A')}
@@ -295,6 +456,95 @@ function BlogManage() {
                                     ))}
                                 </div>
                             </div>
+                        </div>
+                    )}
+                    {currentTab === "commentmanage" && (
+                        <div className="p-4">
+                            <div className="mb-6">
+                                <h2 className="text-lg font-semibold mb-2">Daftar Blog</h2>
+                                <ul className="border rounded-md divide-y">
+                                    {currentBlogs.map((blog) => (
+                                        <li
+                                            key={blog.id}
+                                            className={`p-4 cursor-pointer ${selectedBlog?.id === blog.id ? "bg-blue-100" : ""
+                                                }`}
+                                            onClick={() => handleSelectBlog(blog)}
+                                        >
+                                            <h3 className="font-medium">{blog.title}</h3>
+                                            <div
+                                                className="prose prose-sm max-w-none text-black"
+                                                dangerouslySetInnerHTML={{ __html: blog.description.substring(0, 100) + (blog.description.length > 100 ? '...' : '') }}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="flex justify-center mt-4">
+                                    {Array.from({ length: totalBlogPages }, (_, index) => (
+                                        <button
+                                            key={index + 1}
+                                            onClick={() => handlePageChangeBlogs(index + 1)}
+                                            className={`mx-1 px-3 py-1 rounded ${currentPageBlogs === index + 1
+                                                ? 'bg-blue-500 text-white'
+                                                : 'bg-gray-700 text-gray-300'
+                                                }`}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            {selectedBlog && (
+                                <div>
+                                    <h2 className="text-lg font-semibold mb-4">
+                                        Komentar untuk: {selectedBlog.title}
+                                    </h2>
+
+                                    <div className="flex items-center justify-between mb-4">
+                                        <button
+                                            onClick={toggleSelectAllComments}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                                        >
+                                            {selectedComments.length === comments.length
+                                                ? 'Deselect All'
+                                                : 'Select All'}
+                                        </button>
+                                        <button
+                                            onClick={() => setShowDeleteModal(true)}
+                                            className={`bg-red-500 text-white px-4 py-2 rounded ${selectedComments.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                                                }`}
+                                            disabled={selectedComments.length === 0}
+                                        >
+                                            Delete Selected ({selectedComments.length})
+                                        </button>
+                                    </div>
+
+                                    <ul className="border rounded-md divide-y">
+                                        {comments.map((comment) => (
+                                            <li key={comment.id} className="p-4 flex items-center gap-4">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedComments.includes(comment.id)}
+                                                    onChange={() => toggleCommentSelection(comment.id)}
+                                                />
+                                                <div>
+                                                    <div>
+                                                        <p className="font-medium">{comment.name}</p>
+                                                        <p>{comment.email}</p>
+                                                    </div>
+                                                    <div
+                                                        className="prose prose-sm max-w-none text-black"
+                                                        dangerouslySetInnerHTML={{ __html: comment.comment.substring(0, 100) + (comment.comment.length > 100 ? '...' : '') }}
+                                                    />
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {comments.length === 0 && (
+                                        <p className="text-gray-600 mt-4">Tidak ada komentar.</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     )}
                     {currentTab === "newslettermanage" && (
@@ -464,6 +714,27 @@ function BlogManage() {
                                 setIsModalOpen(false);
                             }}
                         />
+                    </div>
+                </div>
+            )}
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded shadow-lg max-w-md w-full">
+                        <p className="text-lg">Are you sure you want to delete selected comments?</p>
+                        <div className="mt-4 flex justify-end space-x-4">
+                            <button
+                                onClick={deleteSelectedComments}
+                                className="bg-red-500 text-white px-4 py-2 rounded"
+                            >
+                                Yes, Delete
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="bg-gray-300 text-black px-4 py-2 rounded"
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

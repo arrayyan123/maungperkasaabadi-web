@@ -20,7 +20,7 @@ function GridBox() {
     return (
         <>
             {/* wrapper grid nya */}
-            <div className='py-10 h-auto w-auto'>
+            <div className='py-10 lg:px-7 px-5 h-auto w-auto'>
                 <div className='flex lg:flex-row flex-col gap-4'>
                     <div className='flex'>
                         <div className='w-full p-10 relative cursor-pointer overflow-hidden rounded-[40px] lg:h-[695px] h-auto flex bg-gradient-to-b from-[#505050] to-[#191919]'>
@@ -29,7 +29,7 @@ function GridBox() {
                         </div>
                     </div>
                     <div className='flex flex-col h-full w-full gap-4 justify-end'>
-                        <Link href='/blog'>
+                        <Link href='/blog-page'>
                             <div className=' rounded-[40px] cursor-pointer lg:h-[345px] h-[245px] overflow-hidden relative flex items-end p-10 justify-start bg-gradient-to-b from-gray-300 to-gray-500'>
                                 <div
                                     className="relative z-40 text-white hover:font-bold cursor-pointer transition-all ease-in-out before:transition-[width] before:ease-in-out before:duration-700 before:absolute before:bg-white before:origin-center before:h-[1px] before:w-0 hover:before:w-[50%] before:bottom-0 before:left-[50%] after:transition-[width] after:ease-in-out after:duration-700 after:absolute after:bg-white after:origin-center after:h-[1px] after:w-0 hover:after:w-[50%] after:bottom-0 after:right-[50%]">

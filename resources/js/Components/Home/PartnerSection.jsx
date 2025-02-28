@@ -30,14 +30,9 @@ function PartnerSection() {
 
     return (
         <>
-            <div className='py-10'>
+            <div className='py-10 px-7'>
                 <span className='flex flex-col gap-4'>
-                    <h1 className='text-black font-bold text-[40px]'>Partner & Team</h1>
-                    <p className='text-black'>
-                        Kami percaya bahwa kolaborasi adalah kunci keberhasilan. Bersama dengan mitra strategis dan tim profesional yang berpengalaman, kami membangun solusi inovatif untuk setiap tantangan bisnis Anda.
-                        Tim kami terdiri dari individu yang berdedikasi, berbakat, dan memiliki keahlian di berbagai bidang, siap memberikan layanan terbaik dengan komitmen penuh terhadap kualitas dan hasil.
-                        Sebagai mitra terpercaya, kami bekerja sama dengan berbagai perusahaan dan organisasi untuk menciptakan sinergi yang saling menguntungkan, membawa dampak positif dan pertumbuhan berkelanjutan.
-                    </p>
+                    <h1 className='text-black font-bold text-[40px] md:ml-16'>Partner & Team</h1>
                 </span>
                 <div className='my-20'>
                     <Swiper

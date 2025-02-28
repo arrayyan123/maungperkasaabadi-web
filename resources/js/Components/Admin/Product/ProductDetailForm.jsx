@@ -91,9 +91,7 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
         });
 
         try {
-            let response;
             if (productDetail) {
-                // Update detail produk jika ada detail yang dipilih
                 await axios.post(`/api/product-details/${productDetail.id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -101,7 +99,6 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
                     },
                 });
             } else {
-                // Buat detail produk baru
                 await axios.post('/api/product-details', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -138,17 +135,17 @@ function ProductDetailForm({ productDetail, onClose, onUpdate }) {
     };
 
     const handleDeleteImage = (id) => {
-        setDeleteImages((prev) => [...prev, id]); // Menambahkan ke daftar gambar yang akan dihapus
-        setLocalImages((prev) => prev.filter((image) => image.id !== id)); // Menghapus gambar dari tampilan
+        setDeleteImages((prev) => [...prev, id]); 
+        setLocalImages((prev) => prev.filter((image) => image.id !== id));
     };
 
     const handleRemovePreviewImage = (index) => {
-        setImages((prev) => prev.filter((_, i) => i !== index)); // Menghapus gambar dari preview
+        setImages((prev) => prev.filter((_, i) => i !== index));
     };
 
     return (
-        <div className='flex flex-col item-center justify-center w-full'>
-            <h1 className='font-bold text-[23px] text-center'>
+        <div className='flex flex-col item-center text-black justify-center w-full'>
+            <h1 className='font-bold text-[23px] text-center '>
                 {productDetail ? 'Edit Product Detail' : 'Add Product Detail'}
             </h1>
             <form onSubmit={handleSubmit} className="space-y-4 w-full">

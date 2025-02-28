@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Middleware\VerifyRecaptcha;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
@@ -21,7 +22,8 @@ Route::prefix('admin')->group(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])
             ->name('login');
 
-        Route::post('login', [AuthenticatedSessionController::class, 'store']);
+        Route::post('login', [AuthenticatedSessionController::class, 'store'])
+            ->middleware(VerifyRecaptcha::class);
 
         Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
             ->name('password.request');

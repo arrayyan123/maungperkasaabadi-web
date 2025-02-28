@@ -37,7 +37,7 @@ class PartnerController extends Controller
         $validated = $request->validate([
             'title' =>'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:2048999',
+            'image' => 'nullable|image',
         ]);
 
         if ($request->hasFile('image')) {

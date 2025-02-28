@@ -27,19 +27,19 @@ function ProductsWrapper() {
 
     return (
         <div>
-            <div className='flex flex-col items-center justify-center my-9'>
-                <h1 className='md:text-[45px] text-[30px] font-bold'>Produk Kami</h1>
+            <div className='flex flex-col my-10 items-center justify-center '>
+                <h1 className='md:text-[45px] text-black text-[30px] font-bold'>Produk Kami</h1>
                 <h2 className='md:text-[25px] text-[16px] font-bold'></h2>
                 <div className='grid lg:grid-cols-3 w-full md:grid-cols-2 gap-3 grid-cols-1 md:p-10 p-5'>
                     {products.map((product) => (
                         <div
-                            className={`group w-full h-[255px] cursor-pointer rounded-[20px] flex items-center justify-center relative bg-[#517EBD]`}
+                            className={`group w-full h-[255px] cursor-pointer rounded-[20px] flex items-center justify-center relative bg-orange-100`}
                         >
-                            {/* <img
+                            <img
                                 className="w-full h-full rounded-[20px] object-cover"
-                                src=''
-                                alt=''
-                            /> */}
+                                src={`/storage/${product.image}`}
+                                alt={`Image ${product.title}`}
+                            />
                             <div className="absolute inset-0 flex flex-col items-start justify-end hover:motion-preset-blur-up px-4 py-6 group-hover:hidden transition-transform duration-300 group-hover:top-4 group-hover:left-4 group-hover:items-start group-hover:justify-start">
                                 <h2 className="text-white lg:text-2xl md:text-xl text-lg font-bold">{product.type_product}</h2>
                             </div>
@@ -54,7 +54,7 @@ function ProductsWrapper() {
                                     dangerouslySetInnerHTML={{ __html: product.description_product.substring(0, 80) + (product.description_product.length > 80 ? '...' : '') }}
                                 />
                                 <button
-                                    className="bg-[#FBB039] px-4 py-2 rounded-2xl text-white font-bold"
+                                    className="bg-blue-500 px-4 py-2 rounded-2xl text-white font-bold"
                                     onClick={() => handleProductSelect(product.id)}
                                 >
                                     Learn More

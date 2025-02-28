@@ -39,7 +39,7 @@ function ProductDetailManage() {
             const data = await response.json();
             setProductDetail(data);
         } catch (error) {
-            console.error('Error fetching About Us:', error);
+            console.error('Error fetching Product detail:', error);
         }
     }
 
@@ -57,7 +57,6 @@ function ProductDetailManage() {
 
     const handleEditProduct = (item) => {
         setSelectedProduct(item);
-
         if (formRef.current) {
             formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -74,7 +73,7 @@ function ProductDetailManage() {
                         'X-CSRF-TOKEN': csrfToken,
                     },
                 });
-                alert('About Us item deleted successfully!');
+                alert('Product deleted successfully!');
                 setRefresh(!refresh);
             } catch (error) {
                 console.error('Error deleting product item:', error);
@@ -83,7 +82,7 @@ function ProductDetailManage() {
         }
     };
 
-    const handleDeleteProduct = async (ProductDetailId) => {
+    const handleDeleteProductDetail = async (ProductDetailId) => {
         if (window.confirm('Are you sure you want to delete this Product Detail?')) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -122,7 +121,7 @@ function ProductDetailManage() {
                 }
             >
                 <Head title="Product Detail Management" />
-                <div className='p-4'>
+                <div className='p-4 text-black'>
                     <div className="mx-auto w-full sm:px-4 lg:px-5">
                         <div className="flex border-b overflow-x-auto border-gray-200">
                             {tabs.map(({ label, value }) => (
@@ -144,8 +143,8 @@ function ProductDetailManage() {
                             <div>
                                 <div ref={formRef}>
                                     <ProductForm
-                                        product={selectedProduct}
-                                        onClose={() => setSelectedProduct(null)}
+                                        product={selectedProducts}
+                                        onClose={() => setSelectedProducts(null)}
                                         onUpdate={() => setRefresh(!refresh)}
                                     />
                                 </div>
@@ -157,6 +156,7 @@ function ProductDetailManage() {
                                                 <tr className="bg-gray-100">
                                                     <th className="border border-gray-300 px-4 py-2">Type</th>
                                                     <th className="border border-gray-300 px-4 py-2">Description</th>
+                                                    <th className="border border-gray-300 px-4 py-2">Image</th>
                                                     <th className="border border-gray-300 px-4 py-2">Actions</th>
                                                 </tr>
                                             </thead>
@@ -168,19 +168,27 @@ function ProductDetailManage() {
                                                         </td>
                                                         <td className="border border-gray-300 px-4 py-2">
                                                             <div
-                                                                className="prose prose-sm max-w-none"
+                                                                className="prose prose-sm max-w-none text-black"
                                                                 dangerouslySetInnerHTML={{ __html: product.description_product }}
                                                             />
                                                         </td>
                                                         <td className="border border-gray-300 px-4 py-2">
+                                                            <img
+                                                                src={`/storage/${product.image}`}
+                                                                alt={`Image ${product.title}`}
+                                                                width="50"
+                                                                className="border rounded"
+                                                            />
+                                                        </td>
+                                                        <td className="border border-gray-300 px-4 py-2">
                                                             <button
-                                                                onClick={() => handleEditProduct(product)}
+                                                                onClick={() => handleEditProducts(product)}
                                                                 className="bg-blue-500 text-white px-2 py-1 mr-2 rounded"
                                                             >
                                                                 Edit
                                                             </button>
                                                             <button
-                                                                onClick={() => handleDeleteProduct(product.id)}
+                                                                onClick={() => handleDeleteProducts(product.id)}
                                                                 className="bg-red-500 text-white px-2 py-1 rounded"
                                                             >
                                                                 Delete
@@ -256,7 +264,7 @@ function ProductDetailManage() {
                                                             </button>
                                                             <button
                                                                 onClick={() =>
-                                                                    handleDeleteProduct(detail.id)
+                                                                    handleDeleteProductDetail(detail.id)
                                                                 }
                                                                 className="bg-red-500 text-white px-2 py-1 rounded"
                                                             >

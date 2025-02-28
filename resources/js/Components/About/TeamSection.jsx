@@ -39,9 +39,9 @@ function TeamSection() {
     }, []);
 
     return (
-        <div className="relative flex flex-col gap-8">
+        <div className="relative flex flex-col mb-10 gap-8">
             {/* Header */}
-            <div className="text-left z-20">
+            <div className="text-left z-20 px-8">
                 <h1 className="text-4xl text-black font-bold mb-4">Our Team</h1>
                 <p className="text-gray-700">
                     Didukung oleh tim ahli yang berdedikasi, kami selalu siap memberikan pelayanan terbaik dengan fokus pada hasil yang optimal.
@@ -111,9 +111,10 @@ function TeamSection() {
                                         <h2 className="text-white text-2xl font-bold">{slide.name}</h2>
                                         <p className="text-white text-sm">{slide.position}</p>
                                     </div>
-                                    <p className="text-white text-sm">
-                                        {slide.description}
-                                    </p>
+                                    <span
+                                        className="prose prose-sm max-w-none text-white"
+                                        dangerouslySetInnerHTML={{ __html: slide.description.substring(0, 100) + (slide.description.length > 100 ? '...' : '') }}
+                                    />
                                 </div>
                             </div>
                         </SwiperSlide>

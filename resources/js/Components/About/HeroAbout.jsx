@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Parallax, ParallaxProvider, ParallaxBanner } from 'react-scroll-parallax';
 import IonIcon from '@reacticons/ionicons'
 
 const svgImages = import.meta.glob('/public/assets/Images/*.svg', { eager: true });
@@ -13,13 +14,14 @@ const getImageByName = (name) => {
 };
 
 const aboutBG = getImageByName('about_section')
+const logo = getImageByName('Logo_maung');
 
 function HeroAbout() {
     const [aboutUsContent, setAboutUsContent] = useState([]);
 
     const fetchAboutUs = async () => {
         try {
-            const response = await fetch('/api/aboutus'); 
+            const response = await fetch('/api/aboutus');
             const data = await response.json();
             setAboutUsContent(data);
         } catch (error) {
@@ -31,46 +33,65 @@ function HeroAbout() {
         fetchAboutUs();
     }, []);
 
-    return (
-        <>
-            <div className='flex w-full h-1/2 lg:flex-row flex-col gap-3'>
-                <div class="relative rounded-[22px] md:w-auto bg-gradient-to-r from-purple-600 to-blue-600 h-auto text-white overflow-hidden">
-                    <div class="absolute inset-0">
-                        <img src={`/storage/${aboutUsContent[2]?.image1 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full" />
-                        <div class="absolute inset-0 bg-black opacity-50"></div>
-                    </div>
-                    <div class="relative z-10 lg:p-20 p-0 flex flex-col justify-center h-full space-y-20">
-                        <div className="lg:p-20 p-5 flex mt-20 flex-col justify-center space-y-20 text-center">
-                            <div className="text-left lg:w-auto w-full">
-                                <h1 className="text-5xl font-bold leading-tight mb-4 motion motion-preset-shrink">
-                                    About us
-                                </h1>
-                                <p className="lg:text-lg text-sm text-gray-300 mb-8 motion motion-preset-shrink motion-delay-[200ms]">
-                                    Kami adalah perusahaan yang bergerak di berbagai bidang, mencakup layanan IT dan Non-IT. Dengan keahlian yang luas, kami menyediakan solusi terbaik mulai dari pengembangan teknologi hingga layanan profesional di berbagai sektor. Komitmen kami adalah memberikan pelayanan unggul yang mendukung kebutuhan bisnis Anda.
-                                </p>
-                            </div>
-                            <div className="relative mx-auto animate-bounce">
-                                <IonIcon className="text-white text-[30px]" name="caret-down-outline" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='flex flex-col h-auto gap-4'>
-                    <div className='relative lg:w-[400px] w-auto h-full rounded-[22px] flex items-center justify-center px-20 py-20 bg-gray-400'>
-                        <div class="absolute inset-0 ">
-                            <img src={`/storage/${aboutUsContent[2]?.image2 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full rounded-[22px]" />
-                            <div class="absolute inset-0 bg-black opacity-50 rounded-[22px]"></div>
-                        </div>
-                    </div>
-                    <div className='relative lg:w-[400px] w-auto h-full rounded-[22px] flex items-center justify-center px-20 py-20 bg-gray-700'>
-                        <div class="absolute inset-0">
-                            <img src={`/storage/${aboutUsContent[2]?.image3 || 'Loading...'}`} alt="Background Image" class="object-cover object-center w-full h-full rounded-[22px]" />
-                            <div class="absolute inset-0 bg-black opacity-50 rounded-[22px]"></div>
-                        </div>
-                    </div>
-                </div>
+    const [fadeOut, setFadeOut] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setFadeOut(true);
+        }, 1300);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    const background = {
+        image:
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/105988/banner-background.jpg",
+        translateY: [0, 50],
+        opacity: [1, 0.3],
+        scale: [1.05, 1, "easeOutCubic"],
+        shouldAlwaysCompleteAnimation: true,
+    };
+
+    const headline = {
+        translateY: [0, 30],
+        scale: [1, 1.05, "easeOutCubic"],
+        shouldAlwaysCompleteAnimation: true,
+        expanded: false,
+        children: (
+            <div className="absolute lg:-top-40 -top-20 inset-0 flex items-center justify-center">
+                <h1 className="text-3xl lg:text-8xl motion-preset-slide-up-lg md:text-4xl text-white font-thin">
+                    Tentang Kami
+                </h1>
             </div>
-        </>
+        ),
+    };
+
+    const foreground = {
+        image:
+            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/105988/banner-foreground.png",
+        translateY: [0, 15],
+        scale: [1, 1.1, "easeOutCubic"],
+        shouldAlwaysCompleteAnimation: true,
+    };
+
+    const gradientOverlay = {
+        opacity: [0, 0.9],
+        shouldAlwaysCompleteAnimation: true,
+        expanded: false,
+        children: (
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-blue-900" />
+        ),
+    };
+
+    return (
+        <div className='z-30 relative lg:-top-40 top-0'>
+            <ParallaxProvider>
+                <ParallaxBanner
+                    layers={[background, headline, foreground, gradientOverlay]}
+                    className="lg:aspect-[3/2] aspect-[1/2] -mb-20 bg-gray-900"
+                />
+            </ParallaxProvider>
+        </div>
     )
 }
 

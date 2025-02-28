@@ -56,12 +56,12 @@ function AboutUsManage() {
             <AuthenticatedLayout
                 header={
                     <h2 className="text-2xl font-bold text-white">
-                        Dashboard - About us Management
+                        Team Management
                     </h2>
                 }
             >
-                <Head title="About us Management" />
-                <div className='p-6 bg-gradient-to-b from-gray-800 to-gray-900 text-white min-h-screen'>
+                <Head title="Team Management" />
+                <div className='p-6 min-h-screen'>
                     <div ref={formRef}>
                         <TeamMemberForm
                             Teams={selectedTeamMember}
@@ -72,9 +72,9 @@ function AboutUsManage() {
                     <div className="my-6">
                         <h3 className="text-xl font-semibold mb-4">Team Member List</h3>
                         <div className="overflow-x-auto">
-                            <table className="min-w-full bg-gray-800 text-white rounded-lg shadow-md">
+                            <table className="min-w-full text-black rounded-lg shadow-md">
                                 <thead>
-                                    <tr className="bg-gray-700 text-left">
+                                    <tr className="text-left">
                                         <th className="py-3 px-4">Name</th>
                                         <th className="py-3 px-4">Position</th>
                                         <th className="py-3 px-4">Description</th>
@@ -84,10 +84,15 @@ function AboutUsManage() {
                                 </thead>
                                 <tbody>
                                     {teams.map((item) => (
-                                        <tr key={item.id} className="border-t border-gray-700 hover:bg-gray-700">
+                                        <tr key={item.id} className="border-t border-gray-700 ">
                                             <td className="py-3 px-4">{item.name}</td>
                                             <td className="py-3 px-4">{item.position}</td>
-                                            <td className="py-3 px-4">{item.description}</td>
+                                            <td className="py-3 px-4">
+                                                <div
+                                                    className="prose prose-sm max-w-none text-black"
+                                                    dangerouslySetInnerHTML={{ __html: item.description.substring(0, 100) + (item.description.length > 100 ? '...' : '') }}
+                                                />
+                                            </td>
                                             <td className="py-3 px-4 flex flex-col space-y-2">
                                                 <img
                                                     src={`/storage/${item.image}`}
