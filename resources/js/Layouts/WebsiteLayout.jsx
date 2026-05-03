@@ -78,21 +78,11 @@ function WebsiteLayout({ children }) {
                     setNavbarBackground('bg-[#E9F0F5]');
                     setNavbarText('text-black');
                 } else {
-                    setNavbarBackground('bg-white');
-                    setNavbarText('text-black');
+                    setNavbarBackground('bg-transparent');
+                    setNavbarText('text-white');
                 }
             }
         };
-
-        // const handleScroll = () => {
-        //     if (window.scrollY > 50) {
-        //         setNavbarBackground('bg-white');
-        //         setNavbarText('text-black');
-        //     } else {
-        //         setNavbarBackground('bg-transparent');
-        //         setNavbarText('text-black');
-        //     }
-        // };
 
         window.addEventListener('resize', handleResizeAndScroll);
         window.addEventListener('scroll', handleResizeAndScroll);
@@ -107,10 +97,10 @@ function WebsiteLayout({ children }) {
     return (
         <div className='bg-white'>
             {/* Navbar */}
-            <nav className={`sticky top-0 z-50 lg:flex-row flex-col px-5 max-w-full py-6 w-screen flex justify-between items-center ${navbarBackground} transition-colors duration-300`}>
+            <nav className={`lg:fixed relative top-0 z-50 lg:flex-row flex-col px-5 max-w-full py-6 w-screen flex justify-between items-center ${navbarBackground} transition-colors duration-300`}>
                 <div className="flex flex-row items-center lg:justify-normal justify-between lg:w-auto w-full">
                     <a className="" href="/">
-                        <img src={logo} className="md:w-48 w-32 h-auto" alt="Logo" />
+                        <img src={logo} className="md:w-36 w-32 h-auto" alt="Logo" />
                     </a>
                     <div className="lg:hidden">
                         <button onClick={toggleMenu} className={`navbar-burger flex items-center ${navbarText} p-3`}>
@@ -141,11 +131,11 @@ function WebsiteLayout({ children }) {
                         <li>
                             <Dropdown
                                 label="" dismissOnClick={false}
-                                renderTrigger={() => 
-                                <span className={`${navbarText} text-md flex flex-row items-center gap-1 font-extrabold`}>
-                                    <h1>Produk</h1>
-                                    <IonIcon name='chevron-down' />
-                                </span>}
+                                renderTrigger={() =>
+                                    <span className={`${navbarText} text-md flex flex-row items-center gap-1 font-extrabold`}>
+                                        <h1>Produk</h1>
+                                        <IonIcon name='chevron-down' />
+                                    </span>}
                                 className="relative z-50"
                             >
                                 {products.map((product) => (
@@ -193,90 +183,100 @@ function WebsiteLayout({ children }) {
                 {children}
             </div>
 
-            <div className="w-full mb-4 p-5">
-                <span className="flex flex-row items-center gap-3 text-black">
-                    <IonIcon className="text-2xl" name="mail" />
-                    <h1 className="text-2xl font-bold">Subscribe to our Newsletter</h1>
-                </span>
-                <p className="mb-4">
-                    Tetap Up to date dengan perkembangan mengenai perusahaan kami.
-                </p>
-                <form onSubmit={handleSubmit}>
-                    <div className="flex md:flex-row flex-col items-center gap-4 max-w-2xl">
-                        <div className=" w-full">
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Name
-                            </label>
+            <div className="w-full bg-white py-10 flex justify-center">
+                <div className="w-full px-4">
+                    <div className="bg-white border border-[#b87d58]/20 rounded-2xl shadow-md px-6 md:px-12 py-8 md:py-14 flex flex-col md:flex-row items-center md:justify-between gap-8 md:gap-16">
+                        {/* Kiri: Icon dan Teks */}
+                        <div className="flex flex-col items-center md:items-start text-center md:text-left max-w-xl">
+                            <div className="flex items-center gap-4 mb-3">
+                                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#b87d58]/10">
+                                    <IonIcon name="mail-outline" className="text-3xl" style={{ color: "#b87d58" }} />
+                                </span>
+                                <h1
+                                    className="text-2xl md:text-3xl font-extrabold tracking-tight"
+                                    style={{ color: "#1f2937" }}
+                                >
+                                    Bergabung di Newsletter Kami
+                                </h1>
+                            </div>
+                            <p className="text-base md:text-lg text-[#1f2937]/70">
+                                Dapatkan berita dan update eksklusif langsung ke email Anda.
+                            </p>
+                        </div>
+
+                        {/* Kanan: Form */}
+                        <form
+                            onSubmit={handleSubmit}
+                            className="w-full flex flex-col lg:flex-row gap-3 md:gap-4"
+                            autoComplete="off"
+                        >
                             <input
                                 type="text"
                                 id="name"
                                 value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                onChange={e => setName(e.target.value)}
+                                className="flex-1 px-4 py-3 rounded-lg border border-[#b87d58]/40 focus:ring-2 focus:ring-[#b87d58] text-base placeholder-[#b87d58]/40 transition"
+                                placeholder="Nama lengkap"
                                 required
                             />
-                        </div>
-                        <div className=" w-full">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
                             <input
                                 type="email"
                                 id="email"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                                onChange={e => setEmail(e.target.value)}
+                                className="flex-1 px-4 py-3 rounded-lg border border-[#b87d58]/40 focus:ring-2 focus:ring-[#b87d58] text-base placeholder-[#b87d58]/40 transition"
+                                placeholder="Email Anda"
                                 required
                             />
-                        </div>
-
-                        <button
-                            type="submit"
-                            className={`px-4 py-2 mt-6 text-white rounded-md ${isLoading ? "bg-gray-400" : "bg-blue-600"
-                                }`}
-                            disabled={isLoading}
-                        >
-                            <span className="flex flex-row gap-4 items-center">
-                                <p>{isLoading ? "Subscribing..." : "Subscribe"}</p>
+                            <button
+                                type="submit"
+                                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-bold text-white text-base transition
+                                    ${isLoading
+                                        ? "bg-[#b87d58]/60 cursor-not-allowed"
+                                        : "bg-[#b87d58] hover:bg-[#a06c4b] cursor-pointer"}
+                                `}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? "Mendaftar..." : "Daftar"}
                                 <IonIcon name="send" />
-                            </span>
-                        </button>
+                            </button>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
 
             {/* footer */}
-            <footer class="bg-gray-100 dark:bg-gray-900">
-                <div className='flex md:flex-row flex-col items-center justify-between'>
+            <footer class="bg-gray-800 text-white">
+                <div className='flex md:flex-row flex-col lg:pt-0 pt-10 items-center justify-between'>
                     <div class="max-w-xl flex flex-col md:items-start items-center px-4 py-2 sm:px-6 lg:px-9">
                         <div class="flex text-teal-600 dark:text-teal-300">
                             <img className='w-[150px] h-auto' src={logo} alt="logo maung" />
                         </div>
                         <div className='flex flex-col w-2/1 md:items-start items-center'>
-                            <h1 className="mt-6 text-black text-[20px] max-w-md black leading-relaxed font-bold">
+                            <h1 className="mt-6 text-[20px] max-w-md black leading-relaxed font-bold">
                                 PT. Maung Perkasa Abadi
                             </h1>
-                            <p className='text-black md:text-left text-center'>
+                            <p className='md:text-left text-center'>
                                 Kualitas, Kepercayaan, dan Kepuasan Pelanggan.
                             </p>
                         </div>
                     </div>
                     <div className='flex lg:w-1/3 flex-col mt-6 gap-6 lg:items-end items-center px-4 sm:px-6 lg:px-9'>
                         <div className='w-full'>
-                            <h1 className='text-black font-bold text-[34px]'>Contacts</h1>
-                            <div className='border-b-4 border-black' />
-                            <div className='flex flex-col mt-4'>
+                            <h1 className='font-bold text-[34px]'>Contacts</h1>
+                            <div className='border-b-2 border-gray-400' />
+                            <div className='flex flex-col mt-4 gap-2'>
                                 <span className='flex flex-row gap-3 '>
-                                    <IonIcon name='call' className='text-black text-[18px]' />
-                                    <p className='text-black'>(+62)882-1167-5711</p>
+                                    <IonIcon name='call' className='text-[18px]' />
+                                    <p className=''>(+62)882-1167-5711</p>
                                 </span>
                                 <span className='flex flex-row gap-3 '>
-                                    <IonIcon name='mail' className='text-black text-[18px]' />
-                                    <p className='text-black'>maungperkasaabadi@gmail.com</p>
+                                    <IonIcon name='mail' className='text-[18px]' />
+                                    <p className=''>maungperkasaabadi@gmail.com</p>
                                 </span>
                                 <span className='flex flex-row gap-3 '>
-                                    <IonIcon name='pin' className='text-black text-[18px]' />
-                                    <p className='text-black w-full'>Taman Mutiara</p>
+                                    <IonIcon name='pin' className='text-[18px]' />
+                                    <p className='w-full'>Taman Mutiara</p>
                                 </span>
                             </div>
                         </div>
@@ -286,7 +286,7 @@ function WebsiteLayout({ children }) {
                                     href="#"
                                     rel="noreferrer"
                                     target="_blank"
-                                    class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+                                    class="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
                                 >
                                     <span class="sr-only">Facebook</span>
                                     <IonIcon className='text-[30px]' name='logo-facebook' />
@@ -297,7 +297,7 @@ function WebsiteLayout({ children }) {
                                     href="#"
                                     rel="noreferrer"
                                     target="_blank"
-                                    class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+                                    class="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
                                 >
                                     <span class="sr-only">Instagram</span>
                                     <IonIcon className='text-[30px]' name='logo-instagram' />
@@ -308,7 +308,7 @@ function WebsiteLayout({ children }) {
                                     href="#"
                                     rel="noreferrer"
                                     target="_blank"
-                                    class="text-gray-700 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
+                                    class="text-gray-100 transition hover:text-gray-700/75 dark:text-white dark:hover:text-white/75"
                                 >
                                     <span class="sr-only">WhatsApp</span>
                                     <IonIcon className='text-[30px]' name='logo-whatsapp' />

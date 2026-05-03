@@ -53,11 +53,11 @@ function HeroHome() {
     };
 
     return (
-        <div className='z-30 relative xl:-top-40 lg:-top-0 -top-10'>
+        <div className='z-30 relative xl:-top-40 lg:-top-0 -top-40'>
             <ParallaxProvider>
                 <ParallaxBanner
                     layers={[background]}
-                    className="lg:aspect-[3/2] aspect-[1/2] lg:-mb-20 mb-10 bg-gray-900"
+                    className="lg:aspect-[3/2] aspect-[1/2] -mb-20 bg-gray-900"
                 />
             </ParallaxProvider>
         </div>

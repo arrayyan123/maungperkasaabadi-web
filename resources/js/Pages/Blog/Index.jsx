@@ -86,7 +86,7 @@ function Index() {
     };
 
     return (
-        <div className='lg:p-8 p-4'>
+        <div className='lg:p-8 p-4 text-black'>
             <div className='flex flex-row lg:space-x-5 space-x-0'>
                 <div className='flex flex-col w-full'>
                     <div className='mb-4'>

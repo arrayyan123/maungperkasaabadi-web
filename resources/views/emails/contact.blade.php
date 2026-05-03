@@ -50,6 +50,7 @@
 </head>
 <body>
     <div class="email-container">
+        <img src="" alt="">
         <div class="email-header">
             {!! $header !!}
         </div>

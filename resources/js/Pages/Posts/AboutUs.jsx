@@ -2,6 +2,7 @@ import AboutSection01 from '@/Components/About/AboutSection01'
 import HeroAbout from '@/Components/About/HeroAbout'
 import Service_Section from '@/Components/About/Service_Section'
 import TeamSection from '@/Components/About/TeamSection'
+import TimelineSection from '@/Components/About/TimelineSection'
 import AboutusHome from '@/Components/Home/AboutusHome'
 import WebsiteLayout from '@/Layouts/WebsiteLayout'
 import { Head } from '@inertiajs/react'
@@ -16,7 +17,8 @@ function AboutUs() {
             <HeroAbout />
             <TeamSection />
             <AboutusHome />
-            <Service_Section />
+            <TimelineSection />
+            {/* <Service_Section /> */}
         </WebsiteLayout>
     </>
   )

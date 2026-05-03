@@ -30,5 +30,4 @@ export default withMT({
         tailwindcssMotion,
         require('@tailwindcss/typography')
     ],
-    darkMode: 'false',
 });

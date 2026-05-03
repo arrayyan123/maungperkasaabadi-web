@@ -117,7 +117,7 @@ function Show({ blog }) {
         <>
             <WebsiteLayout>
                 <Head title={blog.title} />
-                <div className='p-4 flex md:flex-row flex-col text-black lg:space-x-5 space-x-0 items-start'>
+                <div className='p-4 pt-32 flex md:flex-row flex-col text-black lg:space-x-5 space-x-0 items-start'>
                     <div className='flex flex-col w-full'>
                         <a href="/blog-page">
                             <button className='bg-[#0F2749] my-4 px-4 py-2 text-white rounded-xl shadow-lg scale-100 hover:scale-110 ease-in-out transition-all duration-300'>
@@ -142,7 +142,7 @@ function Show({ blog }) {
                             />
                         </a>
                         <div
-                            className="prose prose-sm max-w-none"
+                            className="prose prose-sm max-w-none text-black"
                             dangerouslySetInnerHTML={{ __html: blog.description }}
                         />
                         <div className='mt-5'>

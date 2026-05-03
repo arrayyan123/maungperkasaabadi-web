@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Parallax, ParallaxProvider, ParallaxBanner } from 'react-scroll-parallax';
 import IonIcon from '@reacticons/ionicons'
 
-const svgImages = import.meta.glob('/public/assets/Images/*.svg', { eager: true });
-const pngImages = import.meta.glob('/public/assets/Images/*.png', { eager: true });
-const jpgImages = import.meta.glob('/public/assets/Images/*.jpg', { eager: true });
+const svgImages = import.meta.glob('/public/assets/Images/parallaxImg/*.svg', { eager: true });
+const pngImages = import.meta.glob('/public/assets/Images/parallaxImg/*.png', { eager: true });
+const jpgImages = import.meta.glob('/public/assets/Images/parallaxImg/*.jpg', { eager: true });
 
 const images = { ...svgImages, ...pngImages, ...jpgImages };
 
@@ -13,8 +13,8 @@ const getImageByName = (name) => {
     return matchingImage ? images[matchingImage].default || images[matchingImage] : null;
 };
 
-const aboutBG = getImageByName('about_section')
-const logo = getImageByName('Logo_maung');
+const sky = getImageByName('sky')
+const building = getImageByName('city');
 
 function HeroAbout() {
     const [aboutUsContent, setAboutUsContent] = useState([]);
@@ -45,7 +45,7 @@ function HeroAbout() {
 
     const background = {
         image:
-            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/105988/banner-background.jpg",
+            sky,
         translateY: [0, 50],
         opacity: [1, 0.3],
         scale: [1.05, 1, "easeOutCubic"],
@@ -58,8 +58,8 @@ function HeroAbout() {
         shouldAlwaysCompleteAnimation: true,
         expanded: false,
         children: (
-            <div className="absolute lg:-top-40 -top-20 inset-0 flex items-center justify-center">
-                <h1 className="text-3xl lg:text-8xl motion-preset-slide-up-lg md:text-4xl text-white font-thin">
+            <div className="absolute inset-0 mt-32 flex items-center justify-center">
+                <h1 className="text-4xl lg:text-8xl motion-preset-slide-up-lg text-white font-black">
                     Tentang Kami
                 </h1>
             </div>
@@ -68,14 +68,14 @@ function HeroAbout() {
 
     const foreground = {
         image:
-            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/105988/banner-foreground.png",
-        translateY: [0, 15],
+            building,
+        translateY: [20, 15],
         scale: [1, 1.1, "easeOutCubic"],
         shouldAlwaysCompleteAnimation: true,
     };
 
     const gradientOverlay = {
-        opacity: [0, 0.9],
+        opacity: [0, 1],
         shouldAlwaysCompleteAnimation: true,
         expanded: false,
         children: (
@@ -84,10 +84,10 @@ function HeroAbout() {
     };
 
     return (
-        <div className='z-30 relative lg:-top-40 top-0'>
+        <div className='z-30 relative xl:-top-40 lg:-top-0 -top-40'>
             <ParallaxProvider>
                 <ParallaxBanner
-                    layers={[background, headline, foreground, gradientOverlay]}
+                    layers={[background, foreground, headline, gradientOverlay]}
                     className="lg:aspect-[3/2] aspect-[1/2] -mb-20 bg-gray-900"
                 />
             </ParallaxProvider>

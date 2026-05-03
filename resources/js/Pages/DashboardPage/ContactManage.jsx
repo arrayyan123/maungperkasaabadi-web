@@ -2,7 +2,7 @@ import React, { useState, useEffect,useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
-import 'react-quill/dist/quill.snow.css';
+import 'quill/dist/quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import 'quill/dist/quill.snow.css';
 import moment from 'moment';

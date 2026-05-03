@@ -44,6 +44,8 @@ Route::get('/unsubscribe', [SubscriberController::class, 'unsubscribe'])->name('
 //API hanya untuk Admin
 Route::prefix('api')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
+        Route::resource('companystats', \App\Http\Controllers\CompanyStatController::class);
+        Route::resource('timelines', \App\Http\Controllers\TimelineController::class);
         Route::resource('products', ProductController::class);
         Route::post('/products/{product}', [ProductController::class, 'update']);
 
@@ -88,6 +90,8 @@ Route::prefix('api')->group(function () {
 
 //API untuk guest user
 Route::prefix('api')->group(function () {
+    Route::resource('companystats', \App\Http\Controllers\CompanyStatController::class)->except(['show', 'create', 'edit']);
+    Route::resource('timelines', \App\Http\Controllers\TimelineController::class)->except(['create', 'edit', 'show']);
     Route::resource('blogs', BlogController::class)->except(['create', 'edit', 'update', 'delete']);
     Route::resource('comments', CommentController::class)->except(['create', 'edit', 'update', 'delete']);
     Route::resource('blog-types', BlogTypeController::class)->except(['create', 'edit', 'update', 'delete']);
@@ -137,6 +141,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/productdetailmanage', function () {
             return Inertia::render('DashboardPage/ProductDetailManage');
         })->name('productDetailManage.dashboard');
+        Route::get('/timelinemanage', function () {
+            return Inertia::render('DashboardPage/TimelineManage');
+        })->name('timelinemanage.dashboard');
     });
 });
 

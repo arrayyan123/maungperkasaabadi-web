@@ -42,7 +42,7 @@ function Service_Section() {
                                         : "text-gray-500 hover:text-blue-500" // Gaya untuk tab yang tidak aktif
                                         }`}
                                 >
-                                    {product.type_product} {/* Menampilkan label dari tab */}
+                                    {product.type_product}
                                 </button>
                             ))}
                         </div>
